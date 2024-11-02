@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mlID: 1
+  voltage: 1.5
+  power: 1.5
+  amp: 1.5
+  address: MyString
+  electricPrice: 1.5
+  device: one
+
+two:
+  mlID: 1
+  voltage: 1.5
+  power: 1.5
+  amp: 1.5
+  address: MyString
+  electricPrice: 1.5
+  device: two
