@@ -11,4 +11,12 @@ Rails.application.routes.draw do
 
   # Define the root path route (optional, update as needed)
   # root "posts#index"
+
+  resources :device_auth, only: [ :index, :show ] do
+    collection do
+      post "register_device"
+    end
+  end
+
+  resources :devices, only: [ :index, :show, :create, :update, :destroy ]
 end
