@@ -1,0 +1,49 @@
+services:
+  backend_db:
+    image: postgres:16
+    container_name: backend_db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5433:5432"
+    networks:
+      - backend_network
+
+  backend_pgadmin:
+    image: dpage/pgadmin4
+    container_name: backend_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend_db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - backend_network
+
+  backend_web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: backend_web
+    image: backend_web:0.1
+    command: bash -c "bundle exec rake db:create && bundle exec rake db:migrate && ./bin/rails server -b 0.0.0.0 -p 3000"
+    ports:
+      - "3000:3000"
+    networks:
+      - backend_network
+    volumes:
+      - ./:/rails
+    depends_on:
+      - backend_db
+
+volumes:
+  pgadmin_data:
+
+networks:
+  backend_network:
+    external: true
