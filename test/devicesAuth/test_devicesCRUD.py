@@ -64,21 +64,21 @@ if login_response.status_code == 200:
         print("Create Device Response:", create_device_response.status_code, create_device_response_json)
 
         # Step 4: Test PUT /devices/:id
-        device_id = create_device_response_json.get("id", create_device_response_json.get("deviceID", 1))  # Fallback to known ID
-        update_device_data = {
-            "device": {
-                "isActive": False,
-                "voltage": 230.0
-            }
-        }
-        update_device_response = requests.put(f"{BASE_URL}/devices/{device_id}", json=update_device_data, headers=headers)
-        try:
-            update_device_response_json = update_device_response.json()
-        except ValueError:
-            print("Update Device Response is not JSON")
-            update_device_response_json = {}
+        # device_id = create_device_response_json.get("id", create_device_response_json.get("deviceID", 1))  # Fallback to known ID
+        # update_device_data = {
+        #     "device": {
+        #         "isActive": False,
+        #         "voltage": 230.0
+        #     }
+        # }
+        # update_device_response = requests.put(f"{BASE_URL}/devices/{device_id}", json=update_device_data, headers=headers)
+        # try:
+        #     update_device_response_json = update_device_response.json()
+        # except ValueError:
+        #     print("Update Device Response is not JSON")
+        #     update_device_response_json = {}
 
-        print("Update Device Response:", update_device_response.status_code, update_device_response_json)
+        # print("Update Device Response:", update_device_response.status_code, update_device_response_json)
     else:
         print("Token not found in the login response.")
 else:

@@ -1,21 +1,20 @@
-class DeviceController < ApplicationController
-  before_action :set_device, only: [ :index, :show, :update, :destroy ]
+class DevicesController < ApplicationController
   before_action :authorize_request
+  before_action :set_device, only: [ :show, :update, :destroy ]
 
   # GET /devices
   def index
-    if @current_user.nil?
-      render json: { error: "Unauthorized access. No current user found." }, status: :unauthorized and return
-    end
-
-    @devices = @current_user.register_devices
+    @devices = current_user.devices
     render json: @devices
   end
 
-
   # GET /devices/:id
   def show
-    render json: @device
+    if @device
+      render json: @device
+    else
+      render json: { error: "Device not found" }, status: :not_found
+    end
   end
 
   # POST /devices
@@ -23,16 +22,16 @@ class DeviceController < ApplicationController
     @device = current_user.devices.build(device_params)
 
     if @device.save
-      render json: @device, status: :created
+      render json: { message: "Device created successfully", device: @device }, status: :created
     else
       render json: { errors: @device.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /devices/:id
+  # PUT /devices/:id
   def update
     if @device.update(device_params)
-      render json: @device
+      render json: { message: "Device updated successfully", device: @device }
     else
       render json: { errors: @device.errors.full_messages }, status: :unprocessable_entity
     end
@@ -40,18 +39,21 @@ class DeviceController < ApplicationController
 
   # DELETE /devices/:id
   def destroy
-    @device.destroy
-    head :no_content
+    if @device.destroy
+      render json: { message: "Device deleted successfully" }, status: :ok
+    else
+      render json: { error: "Failed to delete device" }, status: :unprocessable_entity
+    end
   end
 
   private
 
   def set_device
-    Rails.logger.info("Current user in set_device: #{@current_user.inspect}")
     @device = current_user.devices.find_by(id: params[:id])
-    render json: { error: "Device not found" }, status: :not_found unless @device
+    unless @device
+      render json: { error: "Device not found" }, status: :not_found
+    end
   end
-
 
   def device_params
     params.require(:device).permit(:deviceID, :isActive, :voltage, :power, :amp, :address, :electricPrice, :register_device_id)
