@@ -3,8 +3,13 @@ import requests
 BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 
 # Test login
+# login_data = {
+#     "email": "john.doe@example.com",
+#     "password": "securepassword"
+# }
+
 login_data = {
-    "email": "john.doe@example.com",
+    "email": "gogo@Gogo.com",
     "password": "securepassword"
 }
 

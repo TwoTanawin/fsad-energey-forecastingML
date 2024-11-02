@@ -3,8 +3,13 @@ import requests
 BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 
 # Step 1: User login to get JWT token
+# login_data = {
+#     "email": "john.doe@example.com",
+#     "password": "securepassword"  # Replace with the actual password for the user
+# }
+
 login_data = {
-    "email": "john.doe@example.com",
+    "email": "gogo@Gogo.com",
     "password": "securepassword"  # Replace with the actual password for the user
 }
 
@@ -30,10 +35,15 @@ if login_response.status_code == 200:
             "Content-Type": "application/json"
         }
 
-        # Step 2: Test login_device API
+        # # Step 2: Test login_device API
+        # login_device_data = {
+        #     "email": "john.doe@example.com",
+        #     "encrypted_device_id": "gAAAAABnJmp8GLxAShdWeiBqYecHsginfsIOSOecd2jJbOL9HWRsdMEbdgleCHAUaWXGiYdWc5ZkduenpibVAS8z0BXqqZicmw=="
+        # }
+        
         login_device_data = {
-            "email": "john.doe@example.com",
-            "encrypted_device_id": "gAAAAABnJmp8GLxAShdWeiBqYecHsginfsIOSOecd2jJbOL9HWRsdMEbdgleCHAUaWXGiYdWc5ZkduenpibVAS8z0BXqqZicmw=="
+            "email": "gogo@Gogo.com",
+            "encrypted_device_id": "gAAAAABnJmp8cRIwcVlmWTWbQGnPWd1Q5lYj4oK6rv1nd27I6shqh0vmT18_TwZnMFoBgfdXm4AADTo-etjLWKrZ6L82xN0URg=="
         }
 
         login_device_response = requests.post(f"{BASE_URL}/login_device", json=login_device_data, headers=headers)

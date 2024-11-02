@@ -3,8 +3,13 @@ import requests
 BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 
 # Test login
+# login_data = {
+#     "email": "john.doe@example.com",
+#     "password": "securepassword"
+# }
+
 login_data = {
-    "email": "john.doe@example.com",
+    "email": "gogo@Gogo.com",
     "password": "securepassword"
 }
 
@@ -33,7 +38,7 @@ if login_response.status_code == 200:
         # Test register device API
         register_device_data = {
             "register_device": {
-                "address": "123 Device Street"
+                "address": "123 Shubuya Japan"
             }
         }
 

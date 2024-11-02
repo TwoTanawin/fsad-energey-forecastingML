@@ -4,7 +4,7 @@ BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 
 # Step 1: User login to get JWT token
 login_data = {
-    "email": "john.doe@example.com",
+    "email": "gogo@Gogo.com",
     "password": "securepassword"  # Replace with the actual password for the user
 }
 
@@ -43,14 +43,14 @@ if login_response.status_code == 200:
         # Step 3: Test POST /devices (create a new device)
         new_device_data = {
             "device": {
-                "deviceID": "gAAAAABnJmp8GLxAShdWeiBqYecHsginfsIOSOecd2jJbOL9HWRsdMEbdgleCHAUaWXGiYdWc5ZkduenpibVAS8z0BXqqZicmw==",
+                "deviceID": "gAAAAABnJmp8cRIwcVlmWTWbQGnPWd1Q5lYj4oK6rv1nd27I6shqh0vmT18_TwZnMFoBgfdXm4AADTo-etjLWKrZ6L82xN0URg==",
                 "isActive": True,
                 "voltage": 220.0,
                 "power": 1500.0,
                 "amp": 6.8,
                 "address": "123 Device Street",
                 "electricPrice": 0.15,
-                "register_device_id": 1  # Replace with an actual register_device_id if needed
+                "register_device_id": 2  # Replace with an actual register_device_id if needed
             }
         }
 
