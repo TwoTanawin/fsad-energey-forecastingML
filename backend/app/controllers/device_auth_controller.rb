@@ -1,5 +1,5 @@
 class DeviceAuthController < ApplicationController
-  before_action :authorize_request, except: [ :index, :show ] # Secure actions as needed
+  before_action :authorize_request, except: [ :index, :show, :login_device ]
 
   # POST /register_device
   def register_device
@@ -10,6 +10,30 @@ class DeviceAuthController < ApplicationController
       render json: { message: "Device registered successfully", device: @register_device }, status: :created
     else
       render json: { errors: @register_device.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  # POST /login_device
+  def login_device
+    encrypted_device_id = params[:encrypted_device_id]
+    user_email = params[:email]
+
+    # Validate that the user exists
+    user = User.find_by(email: user_email)
+    if user.nil?
+      render json: { error: "User not found" }, status: :not_found and return
+    end
+
+    # Load the predefined device data
+    device_data = load_device_data
+
+    # Check if the encrypted device ID matches any in the predefined data
+    matching_device = device_data.find { |device| device["encrypted"] == encrypted_device_id }
+
+    if matching_device
+      render json: { message: "Device login successful", device: matching_device }, status: :ok
+    else
+      render json: { error: "Device not recognized" }, status: :unauthorized
     end
   end
 
@@ -36,6 +60,10 @@ class DeviceAuthController < ApplicationController
     params.require(:register_device).permit(:registerDeviceID, :address)
   end
 
+  def load_device_data
+    YAML.load_file(Rails.root.join("config", "device_data.yml"))["devices"]
+  end
+
   def authorize_request
     token = request.headers["Authorization"]&.split(" ")&.last
     Rails.logger.info("Raw Authorization header: #{request.headers['Authorization']}")
@@ -60,9 +88,21 @@ class DeviceAuthController < ApplicationController
     end
   end
 
-
-  # Define a helper to return the current user object for use in controllers
   def current_user
     @current_user
+  end
+
+  def decrypt(encrypted_text)
+    # Replace with the actual decryption logic
+    # This example assumes the use of a symmetric key decryption method
+    cipher = OpenSSL::Cipher.new("aes-256-cbc")
+    cipher.decrypt
+    cipher.key = ENV["DEVICE_ENCRYPTION_KEY"]
+    cipher.iv = ENV["DEVICE_ENCRYPTION_IV"]
+    decrypted = cipher.update(Base64.decode64(encrypted_text)) + cipher.final
+    decrypted
+  rescue OpenSSL::Cipher::CipherError => e
+    Rails.logger.error("Decryption error: #{e.message}")
+    nil
   end
 end

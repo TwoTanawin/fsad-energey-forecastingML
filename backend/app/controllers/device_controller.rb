@@ -47,9 +47,11 @@ class DeviceController < ApplicationController
   private
 
   def set_device
+    Rails.logger.info("Current user in set_device: #{@current_user.inspect}")
     @device = current_user.devices.find_by(id: params[:id])
     render json: { error: "Device not found" }, status: :not_found unless @device
   end
+
 
   def device_params
     params.require(:device).permit(:deviceID, :isActive, :voltage, :power, :amp, :address, :electricPrice, :register_device_id)

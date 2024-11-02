@@ -1,7 +1,7 @@
 class CreateDevices < ActiveRecord::Migration[7.2]
   def change
     create_table :devices do |t|
-      t.integer :deviceID
+      t.string :deviceID
       t.boolean :isActive
       t.float :voltage
       t.float :power

@@ -18,5 +18,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :devices, only: [ :index, :show, :create, :update, :destroy ]
+  resources :devices, controller: "device", only: [ :index, :show, :create, :update, :destroy ]
+
+  post "login_device", to: "device_auth#login_device"
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_02_112438) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_02_183605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_112438) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.integer "deviceID"
+    t.string "deviceID"
     t.boolean "isActive"
     t.float "voltage"
     t.float "power"

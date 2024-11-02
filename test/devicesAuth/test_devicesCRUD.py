@@ -2,63 +2,84 @@ import requests
 
 BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 
-# Test login
+# Step 1: User login to get JWT token
 login_data = {
     "email": "john.doe@example.com",
-    "password": "securepassword"
+    "password": "securepassword"  # Replace with the actual password for the user
 }
 
 login_response = requests.post(f"{BASE_URL}/login", json=login_data)
-print("Login Response:", login_response.status_code, login_response.json())
+
+try:
+    login_response_json = login_response.json()
+except ValueError:
+    print("Login Response is not JSON")
+    login_response_json = {}
+
+print("Login Response:", login_response.status_code, login_response_json)
 
 # Extract token from login response
 if login_response.status_code == 200:
-    token = login_response.json().get("token")
-    print("JWT Token:", token)
+    token = login_response_json.get("token")
+    if token:
+        print("JWT Token:", token)
 
-    # Prepare headers with the token
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-
-    # Get a current register device ID from the /device_auth endpoint
-    register_device_response = requests.get(f"{BASE_URL}/device_auth", headers=headers)
-    if register_device_response.status_code == 200 and register_device_response.json():
-        register_device_id = register_device_response.json()[0].get("id")  # Use the first available ID
-        print("Using Register Device ID:", register_device_id)
-    else:
-        print("Failed to retrieve register device ID. Status Code:", register_device_response.status_code)
-        print("Response:", register_device_response.text)
-        exit()
-
-
-
-    # Test POST /devices (Create a device)
-    create_device_data = {
-        "device": {
-            "isActive": True,
-            "voltage": 220.5,
-            "power": 150.0,
-            "amp": 0.68,
-            "address": "123 Device Street",
-            "electricPrice": 0.15,
-            "register_device_id": register_device_id
+        # Prepare headers with the token
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
         }
-    }
 
-    create_response = requests.post(f"{BASE_URL}/devices", json=create_device_data, headers=headers)
-    print("Create Device Response:", create_response.status_code, create_response.json())
+        # Step 2: Test GET /devices
+        devices_response = requests.get(f"{BASE_URL}/devices", headers=headers)
+        try:
+            devices_response_json = devices_response.json()
+        except ValueError:
+            print("Devices Response is not JSON")
+            devices_response_json = {}
 
-    # Test GET /devices (Index action)
-    index_response = requests.get(f"{BASE_URL}/devices", headers=headers)
-    print("Index Devices Response:", index_response.status_code, index_response.json())
+        print("Devices Response:", devices_response.status_code, devices_response_json)
 
-    # Test GET /devices/:id (Show action)
-    # Replace with an actual device ID returned from create_response if needed
-    device_id = create_response.json().get("id") or 1  # Replace with a valid ID
-    show_response = requests.get(f"{BASE_URL}/devices/{device_id}", headers=headers)
-    print("Show Device Response:", show_response.status_code, show_response.json())
+        # Step 3: Test POST /devices (create a new device)
+        new_device_data = {
+            "device": {
+                "deviceID": "gAAAAABnJmp8GLxAShdWeiBqYecHsginfsIOSOecd2jJbOL9HWRsdMEbdgleCHAUaWXGiYdWc5ZkduenpibVAS8z0BXqqZicmw==",
+                "isActive": True,
+                "voltage": 220.0,
+                "power": 1500.0,
+                "amp": 6.8,
+                "address": "123 Device Street",
+                "electricPrice": 0.15,
+                "register_device_id": 1  # Replace with an actual register_device_id if needed
+            }
+        }
 
+        create_device_response = requests.post(f"{BASE_URL}/devices", json=new_device_data, headers=headers)
+        try:
+            create_device_response_json = create_device_response.json()
+        except ValueError:
+            print("Create Device Response is not JSON")
+            create_device_response_json = {}
+
+        print("Create Device Response:", create_device_response.status_code, create_device_response_json)
+
+        # Step 4: Test PUT /devices/:id
+        device_id = create_device_response_json.get("id", create_device_response_json.get("deviceID", 1))  # Fallback to known ID
+        update_device_data = {
+            "device": {
+                "isActive": False,
+                "voltage": 230.0
+            }
+        }
+        update_device_response = requests.put(f"{BASE_URL}/devices/{device_id}", json=update_device_data, headers=headers)
+        try:
+            update_device_response_json = update_device_response.json()
+        except ValueError:
+            print("Update Device Response is not JSON")
+            update_device_response_json = {}
+
+        print("Update Device Response:", update_device_response.status_code, update_device_response_json)
+    else:
+        print("Token not found in the login response.")
 else:
-    print("Login failed. Unable to test protected endpoints.")
+    print("Login failed. Unable to test protected endpoint.")
