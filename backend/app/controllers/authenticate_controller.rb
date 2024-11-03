@@ -1,5 +1,32 @@
 class AuthenticateController < ApplicationController
-  before_action :authorize_request, except: [ :register, :login ] # Secure only applicable actions
+  before_action :authorize_request, except: [ :register, :login ]
+  before_action :set_user, only: [ :show, :update, :destroy ]
+
+  # GET /users
+  def index
+    @users = User.all
+    render json: @users
+  end
+
+  # GET /users/:id
+  def show
+    render json: @user
+  end
+
+  # PATCH/PUT /users/:id
+  def update
+    if @user.update(user_params)
+      render json: @user
+    else
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  # DELETE /users/:id
+  def destroy
+    @user.destroy
+    render json: { message: "User deleted successfully" }, status: :ok
+  end
 
   # POST /register
   def register
@@ -26,7 +53,7 @@ class AuthenticateController < ApplicationController
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
     render json: { error: "User not found" }, status: :not_found unless @user
   end
 
@@ -41,29 +68,22 @@ class AuthenticateController < ApplicationController
 
   def authorize_request
     token = request.headers["Authorization"]&.split(" ")&.last
-    Rails.logger.info("Raw Authorization header: #{request.headers['Authorization']}")
-    Rails.logger.info("Extracted token: #{token}")
-
     if token.nil?
       render json: { error: "Token missing" }, status: :bad_request and return
     end
 
     begin
       decoded_token = JWT.decode(token, ENV["JWT_SECRET_KEY"], true, { algorithm: "HS256" })[0]
-      Rails.logger.info("Successfully decoded token: #{decoded_token}")
       @current_user = User.find(decoded_token["user_id"])
     rescue JWT::ExpiredSignature
       render json: { error: "Token has expired" }, status: :unauthorized
     rescue JWT::DecodeError => e
-      Rails.logger.error("JWT Decode Error: #{e.message}")
       render json: { error: "Invalid token: #{e.message}" }, status: :unauthorized
     rescue ActiveRecord::RecordNotFound => e
-      Rails.logger.error("User not found: #{e.message}")
       render json: { error: "User not found" }, status: :unauthorized
     end
   end
 
-  # Define a helper to return the current user object for use in controllers
   def current_user
     @current_user
   end

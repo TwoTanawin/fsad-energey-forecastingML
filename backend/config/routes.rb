@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   # Define only the routes needed for authentication
+  resources :users, only: [ :index, :show, :update, :destroy ]
   post "/register", to: "authenticate#register"
   post "/login", to: "authenticate#login"
 
   # Standard CRUD actions for users (optional if needed)
-  resources :users, only: [ :index, :show, :update, :destroy ]
+  # resources :users, only: [ :index, :show, :update, :destroy ]
 
   # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
@@ -23,4 +24,6 @@ Rails.application.routes.draw do
   post "login_device", to: "device_auth#login_device"
 
   resources :posts, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
 end
