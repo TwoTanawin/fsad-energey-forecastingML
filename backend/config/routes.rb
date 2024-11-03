@@ -21,4 +21,6 @@ Rails.application.routes.draw do
   resources :devices
 
   post "login_device", to: "device_auth#login_device"
+
+  resources :posts, only: [ :index, :show, :create, :update, :destroy ]
 end
