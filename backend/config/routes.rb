@@ -26,4 +26,6 @@ Rails.application.routes.draw do
   resources :posts, only: [ :index, :show, :create, :update, :destroy ]
 
   resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :likes, only: [ :index, :show, :create, :update, :destroy ]
 end
