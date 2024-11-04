@@ -1,0 +1,13 @@
+
+<!-- <router-outlet /> -->
+
+<div *ngIf="isSignInPage()">
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow flex items-center justify-center bg-gray-100">
+      <router-outlet></router-outlet>
+    </div>
+
+    <!-- Footer for the sign-in/register page -->
+    <app-footer></app-footer>
+  </div>
+</div>

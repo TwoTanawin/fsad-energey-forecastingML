@@ -1,7 +1,7 @@
 class CreateMlPredictions < ActiveRecord::Migration[7.2]
   def change
     create_table :ml_predictions do |t|
-      t.integer :mlID
+      t.primary_key :mlID
       t.float :voltage
       t.float :power
       t.float :amp

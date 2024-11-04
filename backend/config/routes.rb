@@ -28,4 +28,6 @@ Rails.application.routes.draw do
   resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
 
   resources :likes, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :comments, only: [ :index, :show, :create, :update, :destroy ]
 end
