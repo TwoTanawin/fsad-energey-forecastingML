@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-// import { AuthService } from '../../services/authentication.service';
-import { Router } from '@angular/router';  // Import Router for navigation
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -14,14 +15,18 @@ export class RegisterComponent {
   confirmPassword: string = '';
 
   constructor(
-    // private authService: AuthService, 
+    private authService: AuthService,
     private router: Router
-  ) {}  // Inject the Router
+  ) {}
 
   // Handle form submission
   onSubmit() {
     if (this.password !== this.confirmPassword) {
-      alert('Passwords do not match!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Passwords do not match!',
+      });
       return;
     }
 
@@ -31,19 +36,26 @@ export class RegisterComponent {
       password: this.password
     };
 
-    // // Send the user data to the backend for registration
-    // this.authService.register(userData).subscribe({
-    //   next: (response) => {
-    //     console.log('User registered:', response);
-    //     alert('Registration successful!');
-
-    //     // Navigate to the login page after successful registration
-    //     this.router.navigate(['/signin']);
-    //   },
-    //   error: (error) => {
-    //     console.error('Error registering user:', error);
-    //     alert('Registration failed!');
-    //   }
-    // });
+    // Register user using AuthService
+    this.authService.register(userData).subscribe(
+      (response) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful',
+          text: 'You have successfully registered!',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          this.router.navigate(['/login']);  // Navigate to login page after successful registration
+        });
+      },
+      (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Registration Failed',
+          text: 'There was an issue with your registration. Please try again.',
+        });
+        console.error('Registration failed', error);
+      }
+    );
   }
 }
