@@ -1,0 +1,62 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+      <!-- Logo -->
+      <div class="flex justify-center">
+        <img src="../../../assets/images/GoRotine-removebg-preview.png" alt="Your Logo" class="h-20">
+      </div>
+  
+      <!-- Title -->
+      <h2 class="mt-8 text-center text-2xl font-bold leading-9 text-gray-900">
+        Add Your Device
+      </h2>
+  
+      <!-- Form -->
+      <form  class="mt-8 space-y-6">
+  
+        <!-- Token -->
+        <div>
+          <label for="token" class="block text-sm font-medium text-gray-700">Token</label>
+          <input 
+            type="text" 
+            id="token"
+
+            name="token"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+            placeholder="Enter your token"
+            required>
+        </div>
+  
+        <!-- Address -->
+        <div>
+          <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+          <textarea
+            id="address"
+ 
+            name="address"
+            rows="3"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+            placeholder="P.O. Box 4, 58 Moo 9, Km. 42, Paholyothin Highway, Klong Luang, Pathum Thani 12120 Thailand"
+            required></textarea>
+        </div>
+  
+        <!-- Register Button -->
+        <div>
+          <button 
+            type="submit" 
+            class="w-full bg-indigo-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Register
+          </button>
+        </div>
+      </form>
+  
+      <!-- Sign-in link -->
+      <p class="mt-6 text-center text-sm text-gray-600">
+        Already have an account? 
+        <a routerLink="/login" class="font-semibold text-indigo-600 hover:text-indigo-500">
+          Sign in here
+        </a>.
+      </p>
+    </div>
+  </div>
+  

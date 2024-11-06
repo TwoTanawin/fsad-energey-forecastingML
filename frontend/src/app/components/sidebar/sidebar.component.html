@@ -12,7 +12,7 @@
     <nav class="flex-1 px-2 py-4 space-y-1 bg-white">
       <a
         *ngFor="let item of navigation"
-        [href]="item.href"
+        [routerLink]="item.href"
         [ngClass]="classNames(
           item.current ? 'bg-indigo-50 text-indigo-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
           'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
@@ -33,7 +33,12 @@
           />
         </svg>
         <span>{{ item.name }}</span>
+
+        
+
       </a>
+
+      
   
       <!-- Topics Section -->
       <div class="mt-6">
@@ -43,7 +48,7 @@
         <div class="mt-1 space-y-1">
           <div *ngFor="let topic of topics; let i = index" class="flex items-center justify-between">
             <a
-              href="/posts"
+              [routerLink]="['/posts']"
               class="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
             >
               <span

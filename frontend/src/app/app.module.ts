@@ -19,6 +19,9 @@ import { environment } from '../environments/environment';
 
 // Import Google Maps Module
 import { GoogleMapsModule } from '@angular/google-maps';
+import { DevicesRegisterComponent } from './components/devices-register/devices-register.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { CreateProfileComponent } from './components/create-profile/create-profile.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,10 @@ import { GoogleMapsModule } from '@angular/google-maps';
     SidebarComponent,
     NavbarComponent,
     DashboardComponent,
-    MapComponent
+    MapComponent,
+    DevicesRegisterComponent,
+    ProfileComponent,
+    CreateProfileComponent,
   ],
   imports: [
     BrowserModule,

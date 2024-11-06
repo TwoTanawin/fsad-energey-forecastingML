@@ -1,0 +1,47 @@
+<form (submit)="saveProfile()">
+  <div class="grid grid-cols-3 gap-8">
+    <div class="col-span-1 flex flex-col items-center">
+      <img
+        [src]="profilePicture"
+        alt="Profile Picture"
+        class="h-32 w-32 rounded-full object-cover mb-4"
+      />
+      <input type="file" (change)="onImageSelected($event)" class="text-sm" />
+    </div>
+
+    <div class="col-span-2 grid grid-cols-2 gap-4">
+      <div class="col-span-2">
+        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+        <input
+          id="username"
+          type="text"
+          name="username"
+          [(ngModel)]="profile.username"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          disabled
+        />
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="profile.email"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          disabled
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end mt-6">
+    <button
+      type="submit"
+      class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none"
+    >
+      Save Changes
+    </button>
+  </div>
+</form>

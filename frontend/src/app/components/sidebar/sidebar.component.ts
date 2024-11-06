@@ -7,7 +7,9 @@ import { Component } from '@angular/core';
 })
 export class SidebarComponent {
   navigation = [
-    { name: 'Home', icon: 'home', href: '/posts', current: true },
+    { name: 'Home', icon: 'home', href: '/map', current: true },
+    { name: 'Dashboard', icon: 'dashboard', href: '/dashboard', current: false },
+    { name: 'Community', icon: 'community', href: '/community', current: false },
   ];
 
   topics = [

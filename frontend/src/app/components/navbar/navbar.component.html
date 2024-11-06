@@ -1,1 +1,97 @@
-<p>navbar works!</p>
+<nav class="bg-white shadow-sm">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Left Section: Icon -->
+        <div class="flex items-center space-x-4">
+          <a routerLink="/posts" class="text-indigo-600 text-2xl font-bold">
+            Fitness AppZ
+          </a>
+        </div>
+  
+        <!-- Centered Search Bar -->
+        <div class="flex-grow flex justify-center">
+          <div class="relative w-96">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Search..."
+            />
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            >
+              <svg
+                class="h-5 w-5 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12.9 14.32a8 8 0 111.41-1.41l4.49 4.48a1 1 0 01-1.42 1.42l-4.48-4.49zM8 14A6 6 0 108 2a6 6 0 000 12z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Right Section: Profile Menu -->
+        <div class="flex items-center space-x-6">
+          <div class="relative">
+            <!-- Button to open the dropdown -->
+            <button
+              (click)="toggleProfileMenu()"
+              class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+            >
+              <span class="sr-only">Open user menu</span>
+              <img
+                alt="Profile Image"
+                [src]="profileImage"
+                class="h-8 w-8 rounded-full"
+              />
+            </button>
+  
+            <!-- Profile Menu Dropdown -->
+            <div
+              *ngIf="profileMenuOpen"
+              class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="user-menu"
+            >
+              <a
+                (click)="closeProfileMenu()"
+                routerLink="/user-profile"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </a>
+  
+              <a
+                (click)="closeProfileMenu()"
+                routerLink="/profile-update"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                Create Profile
+              </a>
+  
+              <a
+                (click)="closeProfileMenu()"
+                routerLink="/signin"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                Sign out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
