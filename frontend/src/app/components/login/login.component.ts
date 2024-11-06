@@ -40,7 +40,7 @@ export class LoginComponent {
           text: 'You have successfully logged in!',
           confirmButtonText: 'OK'
         }).then(() => {
-          this.router.navigate(['/dashboard']);  // Navigate to dashboard or home page after login
+          this.router.navigate(['/map']);  // Navigate to dashboard or home page after login
         });
       },
       (error) => {

@@ -11,14 +11,25 @@ import { RegisterComponent } from './components/register/register.component';
 import { FooterComponent } from './components/footer/footer.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MapComponent } from './components/map/map.component';
+import { environment } from '../environments/environment';
 
+// Import Google Maps Module
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    FooterComponent
+    FooterComponent,
+    SidebarComponent,
+    NavbarComponent,
+    DashboardComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +37,8 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     RouterModule.forRoot([]),
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    GoogleMapsModule  // Add GoogleMapsModule here
   ],
   providers: [],
   bootstrap: [AppComponent]
