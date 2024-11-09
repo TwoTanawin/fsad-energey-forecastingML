@@ -95,28 +95,27 @@ export class PostComponent implements OnInit {
     });
   }
 
-  // Load all posts from the server
   loadPosts() {
     this.postService.getAllPosts().subscribe({
       next: (posts: any[]) => {
-        console.log("Raw posts data from API:", posts); // Log raw data
         this.posts = posts.map((post: any) => ({
           id: post.id,
           content: post.content,
           owner: post.user?.firstName || 'Unknown User',
-          profileImage: post.user?.user_profile?.profile_picture
-            ? this.decodeBase64Image(post.user.user_profile.profile_picture)
-            : '/assets/images/brocode.png',
-          image: post.image ? this.decodeBase64Image(post.image) : null,
+          profileImage: post.user?.userImg
+            ? this.decodeBase64Image(post.user.userImg)
+            : '/assets/images/brocode.png', // Correctly using userImg
+          image: post.image ? this.decodeBase64Image(post.image) : '/assets/images/placeholder.png',
           timestamp: post.created_at || 'N/A',
           comments: post.comments || []
         }));
-        console.log(posts)
-        console.log("Processed posts:", this.posts); // Log processed data
       },
       error: (error: any) => console.error('Failed to load posts:', error),
     });
   }
+  
+
+
   
   // Pin a post to move it to the top
   pinPost(postId: number) {

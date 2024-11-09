@@ -2,11 +2,13 @@ class PostsController < ApplicationController
   before_action :authorize_request
   before_action :set_post, only: [ :show, :update, :destroy ]
 
-  # GET /posts
-  def index
-    @posts = Post.all
-    render json: @posts
-  end
+# posts_controller.rb
+def index
+  posts = Post.includes(:user).order(created_at: :desc)
+  render json: posts.as_json(include: { user: { only: [ :firstName, :lastName, :userImg ] } })
+end
+
+
 
   # GET /posts/:id
   def show
