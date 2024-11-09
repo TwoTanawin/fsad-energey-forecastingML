@@ -85,6 +85,7 @@ export class PostInteractionComponent implements OnInit {
     });
   }
   
+  
 
   addComment(): void {
     if (this.newCommentText.trim()) {

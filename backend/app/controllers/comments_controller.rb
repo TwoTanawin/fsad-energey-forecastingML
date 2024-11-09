@@ -4,12 +4,22 @@ class CommentsController < ApplicationController
 
   def index
     if params[:post_id]
-      @comments = Comment.where(post_id: params[:post_id])
-      render json: @comments
+      @comments = Comment.where(post_id: params[:post_id]).includes(:user)
+      comments_with_user_info = @comments.map do |comment|
+        {
+          id: comment.id,
+          content: comment.content,
+          user_id: comment.user.id,
+          commenter_name: "#{comment.user.firstName} #{comment.user.lastName}",
+          commenter_profile_image: comment.user.userImg ? "data:image/png;base64,#{comment.user.userImg}" : "/assets/images/brocode.png"
+        }
+      end
+      render json: comments_with_user_info
     else
       render json: { error: "Post not found" }, status: :not_found
     end
   end
+
 
   # GET /comments/:id
   def show
