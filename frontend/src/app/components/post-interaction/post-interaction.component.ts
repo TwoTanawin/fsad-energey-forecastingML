@@ -70,6 +70,7 @@ export class PostInteractionComponent implements OnInit {
   loadComments(): void {
     this.postService.getCommentsForPost(this.postId).subscribe({
       next: (comments: any[]) => {
+        console.log('Fetched comments:', comments); // Log fetched comments
         this.comments = comments.map((comment) => ({
           id: comment.id,
           commenterName: comment.commenter_name,
@@ -83,6 +84,7 @@ export class PostInteractionComponent implements OnInit {
       },
     });
   }
+  
 
   addComment(): void {
     if (this.newCommentText.trim()) {

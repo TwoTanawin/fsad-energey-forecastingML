@@ -2,12 +2,14 @@ class CommentsController < ApplicationController
   before_action :authorize_request
   before_action :set_comment, only: [ :show, :update, :destroy ]
 
-  # GET /comments
   def index
-    @comments = Comment.where(post_id: params[:post_id])
-    render json: @comments
+    if params[:post_id]
+      @comments = Comment.where(post_id: params[:post_id])
+      render json: @comments
+    else
+      render json: { error: "Post not found" }, status: :not_found
+    end
   end
-
 
   # GET /comments/:id
   def show

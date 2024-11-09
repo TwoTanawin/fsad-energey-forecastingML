@@ -60,9 +60,8 @@ export class PostService {
   }
 
   getCommentsForPost(postId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.BASE_URL}/comments?post_id=${postId}`, { headers: this.getAuthHeaders() });
-  }
-
+    return this.http.get<any[]>(`${this.BASE_URL}/posts/${postId}/comments`, { headers: this.getAuthHeaders() });
+  }  
 
   // Assuming you are using a method like this to create a comment
   addComment(postId: number, content: string) {
