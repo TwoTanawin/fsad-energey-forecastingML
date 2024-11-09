@@ -1,0 +1,63 @@
+<!-- Post Creation Section -->
+<div *ngIf="!isExpanded" class="max-w-xl mx-auto bg-white p-4 rounded-lg shadow-md">
+    <div class="flex items-center space-x-4 p-2">
+      <!-- Show the logged-in user's profile image -->
+      <img class="h-10 w-10 rounded-full" [src]="userProfileImage" alt="Profile Picture" />
+      <div class="flex-1">
+        <input
+          type="text"
+          placeholder="What's on your mind, {{userName}}?"
+          class="w-full px-4 py-2 bg-gray-100 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          (click)="isExpanded = true"
+        />
+      </div>
+    </div>
+  </div>
+  
+  <!-- Expanded Post Creation Modal -->
+  <div *ngIf="isExpanded" class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-bold">Create post</h2>
+        <button (click)="isExpanded = false" class="text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+  
+      <!-- Post Content Input -->
+      <textarea [(ngModel)]="newPostContent" rows="3" placeholder="What's on your mind, {{userName}}?" class="w-full px-4 py-2 bg-gray-100 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+  
+      <!-- Image Upload Section -->
+      <div class="mt-4">
+        <input type="file" (change)="onImageSelected($event)" class="mb-2" />
+        <!-- Image Preview -->
+        <div *ngIf="newPostImage">
+          <img [src]="newPostImage" class="rounded-lg w-full h-64 object-cover" alt="Image Preview" />
+        </div>
+      </div>
+  
+      <div class="mt-4">
+        <button (click)="createPost()" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Post
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- Render Posts -->
+  <div *ngFor="let post of posts; let i = index">
+    <app-post-interaction
+      [postContent]="post.content"
+      [postImage]="post.image || ''"
+      [postOwner]="post.owner"
+      [profileImage]="post.profileImage" 
+      [timestamp]="post.timestamp"
+      (deletePost)="deletePost(i)"
+      (pinPost)="pinPost(i)"
+    ></app-post-interaction>
+  </div>
+  
+  

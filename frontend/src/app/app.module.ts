@@ -22,6 +22,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { DevicesRegisterComponent } from './components/devices-register/devices-register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CreateProfileComponent } from './components/create-profile/create-profile.component';
+import { PostComponent } from './components/post/post.component';
+import { PostInteractionComponent } from './components/post-interaction/post-interaction.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { CreateProfileComponent } from './components/create-profile/create-profi
     DevicesRegisterComponent,
     ProfileComponent,
     CreateProfileComponent,
+    PostComponent,
+    PostInteractionComponent,
   ],
   imports: [
     BrowserModule,

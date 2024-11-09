@@ -6,6 +6,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MapComponent } from './components/map/map.component';
 import { DevicesRegisterComponent } from './components/devices-register/devices-register.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { PostComponent } from './components/post/post.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'map', component: MapComponent},
   {path: 'devices-register', component: DevicesRegisterComponent},
   {path: 'user-profile', component: ProfileComponent},
+  {path: 'post', component: PostComponent},
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
 ];
 

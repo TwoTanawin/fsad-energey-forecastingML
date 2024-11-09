@@ -16,7 +16,7 @@ class AuthenticationController < ApplicationController
   # PATCH/PUT /users/:id
   def update
     if params[:user][:userImg].present?
-      @user.userImg.attach(params[:user][:userImg])
+      @user.userImg = params[:user][:userImg] # directly assign the Base64 string
     end
 
     if @user.update(user_params.except(:userImg))
