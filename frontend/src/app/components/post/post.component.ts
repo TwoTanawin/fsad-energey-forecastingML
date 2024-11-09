@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
@@ -59,10 +60,7 @@ export class PostComponent implements OnInit {
       return '/assets/images/brocode.png';
     }
   
-    // Remove any existing 'data:image/jpeg;base64,' prefix to avoid duplication
     const cleanedBase64 = base64String.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
-  
-    // Return the sanitized URL with a single 'data:image/jpeg;base64,' prefix
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${cleanedBase64}`);
   }
   
@@ -89,7 +87,6 @@ export class PostComponent implements OnInit {
   
     this.postService.createPost(postData).subscribe({
       next: (response) => {
-        // Prepare the new post data with the decoded image
         const newPost = {
           content: response.content,
           image: response.image ? this.decodeBase64Image(response.image) : '', 
@@ -97,17 +94,21 @@ export class PostComponent implements OnInit {
           comments: []
         };
   
-        // Add the new post to the beginning of the posts array
         this.posts.unshift(newPost);
-  
-        // Reset form inputs
         this.newPostContent = '';
         this.newPostImage = '';
         this.isExpanded = false;
         this.resetForm();
-  
-        // Optionally, reload posts to keep the list updated
         this.loadPosts();
+
+        // Display success alert using SweetAlert2
+        Swal.fire({
+          icon: 'success',
+          title: 'Post Created',
+          text: 'Your post has been successfully created!',
+          timer: 2000,
+          showConfirmButton: false
+        });
       },
       error: (error) => console.error('Failed to create post:', error),
     });
@@ -166,21 +167,17 @@ export class PostComponent implements OnInit {
   onImageSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      this.postImageMimeType = file.type; // Store the MIME type
+      this.postImageMimeType = file.type;
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        
-        // Remove the data prefix and only keep the base64 string
         this.postImageBase64 = result.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
-        
-        // Preview the image
         this.postImage = this.sanitizer.bypassSecurityTrustUrl(result);
       };
       reader.readAsDataURL(file);
     } else {
-      this.postImageBase64 = '';  // No image selected
-      this.postImage = '/assets/images/default-post.png';  // Use default image
+      this.postImageBase64 = '';
+      this.postImage = '/assets/images/default-post.png';
     }
   }
 
@@ -188,6 +185,6 @@ export class PostComponent implements OnInit {
     this.content = '';
     this.postImage = '/assets/images/default-post.png';
     this.postImageBase64 = '';
-    this.postImageMimeType = ''; // Reset MIME type
+    this.postImageMimeType = '';
   }
 }

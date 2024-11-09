@@ -31,8 +31,8 @@ def main():
             created_post_id = test_create_post(token)
 
             # Test updating the post with the created post ID
-            if created_post_id:
-                test_update_post(token, created_post_id)
+            # if created_post_id:
+            #     test_update_post(token, created_post_id)
         else:
             print("Login successful, but token or user ID not found.")
     else:

@@ -31,6 +31,8 @@ export class NavbarComponent implements OnInit {
   // Fetch the user profile data and decode the profile image
   fetchUserProfile() {
     const userId = this.authService.getCurrentUserId(); // Get current user ID from AuthService
+    console.log("Nav Comp : ")
+    console.log(userId)
     if (userId) {
       this.authService.getUserProfile(userId).subscribe({
         next: (profileData) => {
