@@ -47,17 +47,21 @@
 </div>
 
 
-<!-- Render Posts -->
-<div *ngFor="let post of posts; let i = index">
+<div *ngFor="let post of posts">
   <app-post-interaction
     [postContent]="post.content"
-    [postImage]="post.image" 
+    [postImage]="post.image"
     [postOwner]="post.owner"
+    [postOwnerId]="post.ownerId"  
+    [currentUserId]="userId ?? 0" 
     [profileImage]="post.profileImage"
     [timestamp]="post.timestamp"
-    (deletePost)="deletePost(i)"
-    (pinPost)="pinPost(i)"
+    (deletePost)="deletePost(post.id)"
+    (pinPost)="pinPost(post.id)"
+    (updatePostContent)="updatePostContent(post.id, $event)"
   ></app-post-interaction>
 </div>
+
+
 
 

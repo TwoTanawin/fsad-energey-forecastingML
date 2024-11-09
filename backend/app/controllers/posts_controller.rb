@@ -29,17 +29,27 @@ end
 
   # PATCH/PUT /posts/:id
   def update
-    if @post.update(post_params)
-      render json: @post
+    # Check if the current user is the owner of the post
+    if @post.user_id == @current_user.id
+      if @post.update(post_params)
+        render json: @post
+      else
+        render json: @post.errors, status: :unprocessable_entity
+      end
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: { error: "Unauthorized" }, status: :unauthorized
     end
   end
 
   # DELETE /posts/:id
   def destroy
-    @post.destroy
-    head :no_content
+    # Check if the current user is the owner of the post
+    if @post.user_id == @current_user.id
+      @post.destroy
+      head :no_content
+    else
+      render json: { error: "Unauthorized" }, status: :unauthorized
+    end
   end
 
   private

@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
+
 
 interface Comment {
   commenterName: string;
@@ -17,6 +19,8 @@ export class PostInteractionComponent implements OnInit {
   @Input() postContent: string = '';
   @Input() postImage: string = ''; // Optional post image
   @Input() postOwner: string = '';
+  @Input() postOwnerId: number = 0; // ID of the post owner
+  @Input() currentUserId: number = 0; // ID of the logged-in user
   @Input() profileImage: SafeUrl | string = '/assets/images/brocode.png';
   @Input() timestamp: string = '';
 
@@ -30,10 +34,12 @@ export class PostInteractionComponent implements OnInit {
 
   @Output() deletePost = new EventEmitter<void>();
   @Output() pinPost = new EventEmitter<void>();
+  @Output() updatePostContent = new EventEmitter<string>();
 
   constructor(private authService: AuthService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
+    console.log('Post Owner ID on Init:', this.postOwnerId);
     this.loadUserProfile();
   }
 
@@ -41,6 +47,7 @@ export class PostInteractionComponent implements OnInit {
   loadUserProfile(): void {
     const userId = this.authService.getCurrentUserId();
     if (userId) {
+      this.currentUserId = userId
       this.authService.getUserProfile(userId).subscribe({
         next: (profile) => {
           this.userName = `${profile.firstName} ${profile.lastName}`;
@@ -71,13 +78,46 @@ export class PostInteractionComponent implements OnInit {
   }
 
   toggleEdit() {
-    this.isEditing = !this.isEditing;
+    console.log('Current User ID:', this.currentUserId);
+    console.log('Post Owner ID:', this.postOwnerId);
+  
+    if (this.currentUserId && this.currentUserId === this.postOwnerId) {
+      this.isEditing = !this.isEditing;
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized',
+        text: 'You can only edit your own posts.',
+      });
+    }
   }
+  
 
   saveEdit(updatedContent: string) {
-    this.postContent = updatedContent;
-    this.isEditing = false;
+    if (this.currentUserId === this.postOwnerId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to update this post?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, update it!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.updatePostContent.emit(updatedContent);
+          this.isEditing = false;
+  
+          Swal.fire({
+            icon: 'success',
+            title: 'Updated',
+            text: 'Your post has been successfully updated!',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        }
+      });
+    }
   }
+  
 
   likePost() {
     console.log('Post liked!');

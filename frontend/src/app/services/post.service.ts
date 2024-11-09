@@ -23,9 +23,9 @@ export class PostService {
   }
   
 
-  updatePost(postId: number, updatedData: { caption: string; pinned: boolean }): Observable<any> {
+  updatePost(postId: number, updatedData: { post: { content: string; image: string | null } }): Observable<any> {
     return this.http.put(`${this.BASE_URL}/posts/${postId}`, updatedData, { headers: this.getAuthHeaders() });
-  }
+  }  
 
   deletePost(postId: number): Observable<any> {
     return this.http.delete(`${this.BASE_URL}/posts/${postId}`, { headers: this.getAuthHeaders() });

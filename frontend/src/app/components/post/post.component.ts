@@ -30,7 +30,7 @@ export class PostComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.authService.getCurrentUserId();
+    this.userId = this.authService.getCurrentUserId() ?? 0;
     console.log("post component : ", this.userId);
     
     if (this.userId) {
@@ -83,15 +83,16 @@ export class PostComponent implements OnInit {
       }
     };
   
-    console.log("Attempting to create post with data:", postData);
-  
     this.postService.createPost(postData).subscribe({
       next: (response) => {
         const newPost = {
+          id: response.id,
           content: response.content,
           image: response.image ? this.decodeBase64Image(response.image) : '', 
+          ownerId: this.userId,
           timestamp: new Date().toLocaleString(),
-          comments: []
+          comments: [],
+          pinned: false
         };
   
         this.posts.unshift(newPost);
@@ -101,7 +102,6 @@ export class PostComponent implements OnInit {
         this.resetForm();
         this.loadPosts();
 
-        // Display success alert using SweetAlert2
         Swal.fire({
           icon: 'success',
           title: 'Post Created',
@@ -113,55 +113,146 @@ export class PostComponent implements OnInit {
       error: (error) => console.error('Failed to create post:', error),
     });
   }
+
+  updatePostContent(postId: number, updatedContent: string) {
+    const updatedData = {
+      post: {
+        content: updatedContent,
+        image: null,
+      },
+    };
+    this.postService.updatePost(postId, updatedData).subscribe({
+      next: (response) => {
+        const post = this.posts.find((p) => p.id === postId);
+        if (post) {
+          post.content = response.content;
+        }
+      },
+      error: (error) => console.error('Failed to update post:', error),
+    });
+  }
+  
+  deletePost(postId: number) {
+    const post = this.posts.find((p) => p.id === postId);
+    if (post?.ownerId !== this.userId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized',
+        text: 'You can only delete your own posts.',
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this post?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.postService.deletePost(postId).subscribe({
+          next: () => {
+            this.posts = this.posts.filter((post) => post.id !== postId);
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted',
+              text: 'Your post has been deleted.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          },
+          error: (error) => console.error('Failed to delete post:', error),
+        });
+      }
+    });
+  }
+
+  updatePost(postId: number, updatedContent: string, updatedImage?: string) {
+    const post = this.posts.find((p) => p.id === postId);
+    if (post?.ownerId !== this.userId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized',
+        text: 'You can only update your own posts.',
+      });
+      return;
+    }
+  
+    const token = localStorage.getItem('authToken');  // Retrieve token, or use AuthService if applicable
+    const updatedData = {
+      post: {
+        content: updatedContent,
+        image: updatedImage ? `data:${this.postImageMimeType};base64,${this.postImageBase64}` : post.image
+      }
+    };
+  
+    console.log('Updating post with data:', updatedData);
+  
+    this.postService.updatePost(postId, updatedData).subscribe({
+      next: (response) => {
+        post.content = response.content;
+        post.image = response.image ? this.decodeBase64Image(response.image) : post.image;
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated',
+          text: 'Your post has been updated.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      },
+      error: (error) => {
+        console.error('Failed to update post:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'There was an issue updating the post. Please try again.',
+        });
+      },
+    });
+  }
   
 
   loadPosts() {
     this.postService.getAllPosts().subscribe({
       next: (posts: any[]) => {
-        console.log("Raw posts data:", posts);
-
-        this.posts = posts.map((post: any) => {
-          console.log("Post ID:", post.id, "Image Data:", post.image);
-
-          const profileImage = post.user?.userImg
-            ? this.decodeBase64Image(post.user.userImg)
-            : '/assets/images/brocode.png';
-
-          const postImage = post.image
-            ? this.decodeBase64Image(post.image)
-            : ''; 
-
-          console.log("Decoded Post Image:", postImage);
-
-          return {
-            id: post.id,
-            content: post.content,
-            owner: post.user?.firstName || 'Unknown User',
-            profileImage: profileImage,
-            image: postImage, 
-            timestamp: post.created_at || 'N/A',
-            comments: post.comments || []
-          };
+        posts.forEach(post => {
+          console.log('Checking post.user:', post.user);  // Log the user object
+          console.log('Checking post.user.id:', post.user_id);  // Log the user ID
         });
+  
+        this.posts = posts.map((post: any) => ({
+          id: post.id,
+          content: post.content,
+          ownerId: post.user_id, // Attempt to access post.user.id
+          owner: post.user?.firstName || 'Unknown User',
+          profileImage: post.user?.userImg ? this.decodeBase64Image(post.user.userImg) : '/assets/images/brocode.png',
+          image: post.image ? this.decodeBase64Image(post.image) : '',
+          timestamp: post.created_at || 'N/A',
+          comments: post.comments || [],
+          pinned: post.pinned || false
+        }));
       },
       error: (error: any) => console.error('Failed to load posts:', error),
     });
   }
   
+  
+
   pinPost(postId: number) {
     const postIndex = this.posts.findIndex(post => post.id === postId);
     if (postIndex > -1) {
       const [pinnedPost] = this.posts.splice(postIndex, 1);
+      pinnedPost.pinned = true;
       this.posts.unshift(pinnedPost);
-      console.log(`Post with ID ${postId} has been pinned.`);
+      Swal.fire({
+        icon: 'success',
+        title: 'Post Pinned',
+        text: 'The post has been successfully pinned!',
+        timer: 2000,
+        showConfirmButton: false
+      });
     }
-  }
-
-  deletePost(postId: number) {
-    this.postService.deletePost(postId).subscribe({
-      next: () => (this.posts = this.posts.filter((post) => post.id !== postId)),
-      error: (error) => console.error('Failed to delete post:', error),
-    });
   }
 
   onImageSelected(event: Event): void {
@@ -180,6 +271,8 @@ export class PostComponent implements OnInit {
       this.postImage = '/assets/images/default-post.png';
     }
   }
+
+  
 
   private resetForm(): void {
     this.content = '';
