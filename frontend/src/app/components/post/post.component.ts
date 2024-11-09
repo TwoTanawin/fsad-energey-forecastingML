@@ -17,6 +17,11 @@ export class PostComponent implements OnInit {
   userName = 'Loading...';
   userId: number | null = null;
 
+  content: string = '';  // Post content
+  postImage: SafeUrl | string = '/assets/images/default-post.png'; // Default image for preview
+  private postImageBase64: string = '';  // Base64 for backend submission
+  private postImageMimeType: string = '';  // Store MIME type for Base64 encoding
+
   constructor(
     private authService: AuthService,
     private postService: PostService,
@@ -35,13 +40,12 @@ export class PostComponent implements OnInit {
     }
   }
 
-  // Fetch user profile and set profile image
   fetchUserProfile(userId: number) {
     this.authService.getUserProfile(userId).subscribe({
       next: (profileData) => {
         if (profileData) {
           this.userProfileImage = profileData.userImg && this.isBase64(profileData.userImg)
-            ? this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${profileData.userImg}`)
+            ? this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${profileData.userImg}`)
             : '/assets/images/brocode.png';
           this.userName = `${profileData.firstName} ${profileData.lastName}`;
         }
@@ -50,18 +54,24 @@ export class PostComponent implements OnInit {
     });
   }
 
-  // Decode base64 image string if it exists
-  decodeBase64Image(base64String: string | undefined | null): string {
-    return base64String ? `data:image/png;base64,${base64String}` : '/assets/images/brocode.png';
+  decodeBase64Image(base64String: string | undefined | null): SafeUrl | string {
+    if (!base64String) {
+      return '/assets/images/brocode.png';
+    }
+  
+    // Remove any existing 'data:image/jpeg;base64,' prefix to avoid duplication
+    const cleanedBase64 = base64String.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
+  
+    // Return the sanitized URL with a single 'data:image/jpeg;base64,' prefix
+    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${cleanedBase64}`);
   }
+  
 
-  // Check if string is valid Base64
   private isBase64(str: string): boolean {
     const base64Pattern = /^(?:[A-Za-z0-9+\/]{4})*?(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/;
-    return base64Pattern.test(str);
-  }
+    return base64Pattern.test(str) && !str.includes(' ');
+  }  
 
-  // Create new post with content and optional image
   createPost() {
     if (!this.newPostContent && !this.newPostImage) {
       console.error('Cannot create post without content or image.');
@@ -71,7 +81,7 @@ export class PostComponent implements OnInit {
     const postData = {
       post: {
         content: this.newPostContent,
-        image: this.newPostImage || null
+        image: this.postImageBase64 ? `data:${this.postImageMimeType};base64,${this.postImageBase64}` : ''
       }
     };
 
@@ -81,15 +91,16 @@ export class PostComponent implements OnInit {
       next: (response) => {
         const newPost = {
           content: response.content,
-          image: response.image ? this.decodeBase64Image(response.image) : null,
+          image: response.image ? this.decodeBase64Image(response.image) : '', 
           timestamp: new Date().toLocaleString(),
           comments: []
         };
 
         this.posts.unshift(newPost);
         this.newPostContent = '';
-        this.newPostImage = null;
+        this.newPostImage = '';
         this.isExpanded = false;
+        this.resetForm();
       },
       error: (error) => console.error('Failed to create post:', error),
     });
@@ -98,36 +109,45 @@ export class PostComponent implements OnInit {
   loadPosts() {
     this.postService.getAllPosts().subscribe({
       next: (posts: any[]) => {
-        this.posts = posts.map((post: any) => ({
-          id: post.id,
-          content: post.content,
-          owner: post.user?.firstName || 'Unknown User',
-          profileImage: post.user?.userImg
+        console.log("Raw posts data:", posts);
+
+        this.posts = posts.map((post: any) => {
+          console.log("Post ID:", post.id, "Image Data:", post.image);
+
+          const profileImage = post.user?.userImg
             ? this.decodeBase64Image(post.user.userImg)
-            : '/assets/images/brocode.png', // Correctly using userImg
-          image: post.image ? this.decodeBase64Image(post.image) : '/assets/images/placeholder.png',
-          timestamp: post.created_at || 'N/A',
-          comments: post.comments || []
-        }));
+            : '/assets/images/brocode.png';
+
+          const postImage = post.image
+            ? this.decodeBase64Image(post.image)
+            : ''; 
+
+          console.log("Decoded Post Image:", postImage);
+
+          return {
+            id: post.id,
+            content: post.content,
+            owner: post.user?.firstName || 'Unknown User',
+            profileImage: profileImage,
+            image: postImage, 
+            timestamp: post.created_at || 'N/A',
+            comments: post.comments || []
+          };
+        });
       },
       error: (error: any) => console.error('Failed to load posts:', error),
     });
   }
   
-
-
-  
-  // Pin a post to move it to the top
   pinPost(postId: number) {
     const postIndex = this.posts.findIndex(post => post.id === postId);
     if (postIndex > -1) {
       const [pinnedPost] = this.posts.splice(postIndex, 1);
-      this.posts.unshift(pinnedPost); // Move the pinned post to the top
+      this.posts.unshift(pinnedPost);
       console.log(`Post with ID ${postId} has been pinned.`);
     }
   }
 
-  // Delete a post by ID
   deletePost(postId: number) {
     this.postService.deletePost(postId).subscribe({
       next: () => (this.posts = this.posts.filter((post) => post.id !== postId)),
@@ -135,13 +155,31 @@ export class PostComponent implements OnInit {
     });
   }
 
-  // Handle image file selection
-  onImageSelected(event: any) {
-    const file = event.target.files[0];
+  onImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
+      this.postImageMimeType = file.type; // Store the MIME type
       const reader = new FileReader();
-      reader.onload = (e: any) => (this.newPostImage = e.target.result);
+      reader.onload = () => {
+        const result = reader.result as string;
+        
+        // Remove the data prefix and only keep the base64 string
+        this.postImageBase64 = result.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
+        
+        // Preview the image
+        this.postImage = this.sanitizer.bypassSecurityTrustUrl(result);
+      };
       reader.readAsDataURL(file);
+    } else {
+      this.postImageBase64 = '';  // No image selected
+      this.postImage = '/assets/images/default-post.png';  // Use default image
     }
+  }
+
+  private resetForm(): void {
+    this.content = '';
+    this.postImage = '/assets/images/default-post.png';
+    this.postImageBase64 = '';
+    this.postImageMimeType = ''; // Reset MIME type
   }
 }
