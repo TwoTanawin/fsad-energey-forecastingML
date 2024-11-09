@@ -21,7 +21,7 @@ def main():
             print("JWT Token:", token)
             
             # Test POST /comments for post_id 5
-            post_id = 1
+            post_id = 2
             test_create_comment(token, post_id)
         else:
             print("Login successful, but token not found.")

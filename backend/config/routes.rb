@@ -17,7 +17,12 @@ Rails.application.routes.draw do
   delete "/users/:id", to: "authentication#destroy"
 
   resources :posts, only: [ :index, :show, :create, :update, :destroy ]
-  resources :comments, only: [ :index, :show, :create, :update, :destroy ]
+  # resources :comments, only: [ :index, :show, :create, :update, :destroy ]
   resources :likes, only: [ :index, :show, :create, :update, :destroy ]
   resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :posts do
+    resources :comments, only: [ :index, :create ]
+  end
+  resources :comments, only: [ :show, :update, :destroy ]
 end

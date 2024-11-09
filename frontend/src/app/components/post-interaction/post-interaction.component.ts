@@ -1,14 +1,15 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
-
+import { PostService } from '../../services/post.service';
 
 interface Comment {
+  id: number; // Comment ID for deletion purposes
   commenterName: string;
   commenterProfileImage: string;
   commentText: string;
+  userId: number; // ID of the commenter
 }
 
 @Component({
@@ -16,6 +17,7 @@ interface Comment {
   templateUrl: './post-interaction.component.html',
 })
 export class PostInteractionComponent implements OnInit {
+  @Input() postId: number = 0; // Added the missing postId input
   @Input() postContent: string = '';
   @Input() postImage: string = ''; // Optional post image
   @Input() postOwner: string = '';
@@ -36,18 +38,21 @@ export class PostInteractionComponent implements OnInit {
   @Output() pinPost = new EventEmitter<void>();
   @Output() updatePostContent = new EventEmitter<string>();
 
-  constructor(private authService: AuthService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private authService: AuthService,
+    private postService: PostService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
-    console.log('Post Owner ID on Init:', this.postOwnerId);
     this.loadUserProfile();
+    this.loadComments();
   }
 
-  // Fetch current user information
   loadUserProfile(): void {
     const userId = this.authService.getCurrentUserId();
     if (userId) {
-      this.currentUserId = userId
+      this.currentUserId = userId;
       this.authService.getUserProfile(userId).subscribe({
         next: (profile) => {
           this.userName = `${profile.firstName} ${profile.lastName}`;
@@ -62,25 +67,68 @@ export class PostInteractionComponent implements OnInit {
     }
   }
 
-  // Adding a new comment
-  addComment() {
+  loadComments(): void {
+    this.postService.getCommentsForPost(this.postId).subscribe({
+      next: (comments: any[]) => {
+        this.comments = comments.map((comment) => ({
+          id: comment.id,
+          commenterName: comment.commenter_name,
+          commenterProfileImage: comment.commenter_profile_image || '/assets/images/brocode.png',
+          commentText: comment.content,
+          userId: comment.user_id,
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to load comments:', error);
+      },
+    });
+  }
+
+  addComment(): void {
     if (this.newCommentText.trim()) {
-      const newComment: Comment = {
-        commenterName: this.userName,
-        commenterProfileImage: typeof this.userProfileImage === 'string'
-          ? this.userProfileImage
-          : (this.userProfileImage as SafeUrl).toString(), // Convert SafeUrl to string if necessary
-        commentText: this.newCommentText,
+      const commentData = {
+        content: this.newCommentText,
+        post_id: this.postId, // Ensure post_id is passed correctly
       };
-      this.comments.push(newComment);
-      this.newCommentText = ''; // Reset comment input
+      
+      this.postService.addCommentToPost(this.postId, commentData).subscribe({
+        next: (comment: any) => {
+          this.comments.push({
+            id: comment.id,
+            commenterName: this.userName,
+            commenterProfileImage: this.userProfileImage as string,
+            commentText: this.newCommentText,
+            userId: this.currentUserId,
+          });
+          this.newCommentText = ''; // Clear the input field
+        },
+        error: (error) => {
+          console.error('Failed to add comment:', error);
+        },
+      });
+    }
+  }
+
+  deleteComment(commentId: number, commentUserId: number): void {
+    if (this.currentUserId === commentUserId) {
+      this.postService.deleteComment(commentId).subscribe({
+        next: () => {
+          this.comments = this.comments.filter(comment => comment.id !== commentId);
+        },
+        error: (error) => {
+          console.error('Failed to delete comment:', error);
+        },
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized',
+        text: 'You can only delete your own comments.',
+      });
     }
   }
 
   toggleEdit() {
-    console.log('Current User ID:', this.currentUserId);
-    console.log('Post Owner ID:', this.postOwnerId);
-  
     if (this.currentUserId && this.currentUserId === this.postOwnerId) {
       this.isEditing = !this.isEditing;
     } else {
@@ -91,7 +139,6 @@ export class PostInteractionComponent implements OnInit {
       });
     }
   }
-  
 
   saveEdit(updatedContent: string) {
     if (this.currentUserId === this.postOwnerId) {
@@ -117,7 +164,6 @@ export class PostInteractionComponent implements OnInit {
       });
     }
   }
-  
 
   likePost() {
     console.log('Post liked!');

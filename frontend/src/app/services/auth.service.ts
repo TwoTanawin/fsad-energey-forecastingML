@@ -61,4 +61,8 @@ export class AuthService {
     const headers = this.getAuthHeaders();
     return this.http.put(`${this.BASE_URL}/users/${userId}`, { user: userData }, { headers });
   }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 }

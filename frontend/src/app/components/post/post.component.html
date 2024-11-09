@@ -50,6 +50,7 @@
 <div *ngFor="let post of posts">
   <app-post-interaction
     [postContent]="post.content"
+    [postId]="post.id"
     [postImage]="post.image"
     [postOwner]="post.owner"
     [postOwnerId]="post.ownerId"  

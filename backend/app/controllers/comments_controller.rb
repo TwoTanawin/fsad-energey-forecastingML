@@ -4,19 +4,22 @@ class CommentsController < ApplicationController
 
   # GET /comments
   def index
-    @comments = Comment.all
+    @comments = Comment.where(post_id: params[:post_id])
     render json: @comments
   end
+
 
   # GET /comments/:id
   def show
     render json: @comment
   end
 
-  # POST /comments
   def create
+    # Rename `postId` to `post_id` if it exists
+    params[:comment][:post_id] = params[:comment].delete(:postId) if params[:comment][:postId]
+
     @comment = Comment.new(comment_params)
-    @comment.user_id = @current_user.id  # Set the user_id to the current logged-in user
+    @comment.user_id = @current_user.id
 
     if @comment.save
       render json: @comment, status: :created, location: @comment
@@ -24,6 +27,8 @@ class CommentsController < ApplicationController
       render json: @comment.errors, status: :unprocessable_entity
     end
   end
+
+
 
   # PATCH/PUT /comments/:id
   def update

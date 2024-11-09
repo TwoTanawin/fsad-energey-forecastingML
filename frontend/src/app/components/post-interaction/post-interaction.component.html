@@ -1,64 +1,56 @@
 <div class="bg-white shadow-md rounded-lg max-w-lg mx-auto my-4 p-4">
-    <!-- Post Header -->
-    <div class="flex items-center">
-      <img class="h-10 w-10 rounded-full" [src]="profileImage" alt="Profile Picture" />
-      <div class="ml-4">
-        <h3 class="font-bold">{{ postOwner }}</h3>
-        <p class="text-sm text-gray-500">{{ timestamp }}</p>
-      </div>
-      <div class="ml-auto">
-        <button (click)="pin()" class="text-gray-500 hover:text-blue-500">Pin</button>
-        <button (click)="delete()" class="text-gray-500 hover:text-red-500">Delete</button>
-      </div>
+  <!-- Post Header -->
+  <div class="flex items-center">
+    <img class="h-10 w-10 rounded-full" [src]="profileImage" alt="Profile Picture" />
+    <div class="ml-4">
+      <h3 class="font-bold">{{ postOwner }}</h3>
+      <p class="text-sm text-gray-500">{{ timestamp }}</p>
     </div>
-  
-    <!-- Post Content -->
-    <div *ngIf="!isEditing" class="mt-4">
-      <p class="text-gray-700">{{ postContent }}</p>
-  
-      <!-- Conditionally render the image if it exists -->
-      <img *ngIf="postImage" class="mt-2 rounded-lg" [src]="postImage" alt="Post Image" />
-    </div>
-  
-    <!-- Post Edit Mode -->
-    <div *ngIf="isEditing" class="mt-4">
-      <textarea [(ngModel)]="postContent" rows="3" class="w-full p-2 border rounded-lg"></textarea>
-      <button (click)="saveEdit(postContent)" class="mt-2 bg-blue-500 text-white py-1 px-4 rounded">Save</button>
-    </div>
-  
-    <!-- Post Actions -->
-    <div class="flex justify-between mt-4 text-sm text-gray-500">
-      <div>
-        <button (click)="likePost()" class="mr-4">Like</button>
-        <button (click)="toggleEdit()">Edit</button>
-        <button (click)="sharePost()">Share</button>
-      </div>
-    </div>
-  
-    <!-- Comment Section -->
-    <div class="mt-4">
-      <!-- Displaying Comments -->
-      <div *ngFor="let comment of comments" class="mb-2 flex items-start">
-        <!-- Commenter Profile Picture -->
-        <img [src]="comment.commenterProfileImage" class="h-8 w-8 rounded-full" alt="Commenter Profile Picture" />
-        <div class="ml-2">
-          <!-- Commenter Name and Comment Text -->
-          <p class="font-bold text-sm">{{ comment.commenterName }}</p>
-          <p class="text-gray-700">{{ comment.commentText }}</p>
-        </div>
-      </div>
-  
-      <!-- Comment Input -->
-      <div class="flex items-center mt-2">
-        <img [src]="userProfileImage" class="h-8 w-8 rounded-full" alt="Your Profile Picture" />
-        <input
-          [(ngModel)]="newCommentText"
-          type="text"
-          placeholder="Write a comment..."
-          class="w-full ml-2 p-2 border rounded-lg"
-        />
-        <button (click)="addComment()" class="ml-2 bg-blue-500 text-white py-1 px-4 rounded">Post</button>
-      </div>
+    <div class="ml-auto">
+      <button (click)="pin()" class="text-gray-500 hover:text-blue-500">Pin</button>
+      <button (click)="delete()" class="text-gray-500 hover:text-red-500">Delete</button>
     </div>
   </div>
-  
+
+  <!-- Post Content -->
+  <div *ngIf="!isEditing" class="mt-4">
+    <p class="text-gray-700">{{ postContent }}</p>
+    <img *ngIf="postImage" class="mt-2 rounded-lg" [src]="postImage" alt="Post Image" />
+  </div>
+
+  <!-- Post Edit Mode -->
+  <div *ngIf="isEditing" class="mt-4">
+    <textarea [(ngModel)]="postContent" rows="3" class="w-full p-2 border rounded-lg"></textarea>
+    <button (click)="saveEdit(postContent)" class="mt-2 bg-blue-500 text-white py-1 px-4 rounded">Save</button>
+  </div>
+
+  <!-- Comment Section -->
+  <div class="mt-4">
+    <div *ngFor="let comment of comments" class="mb-2 flex items-start">
+      <img [src]="comment.commenterProfileImage" class="h-8 w-8 rounded-full" alt="Commenter Profile Picture" />
+      <div class="ml-2">
+        <p class="font-bold text-sm">{{ comment.commenterName }}</p>
+        <p class="text-gray-700">{{ comment.commentText }}</p>
+      </div>
+      <button
+        *ngIf="currentUserId === comment.userId"
+        (click)="deleteComment(comment.id, comment.userId)"
+        class="ml-auto text-red-500 text-sm"
+      >
+        Delete
+      </button>
+    </div>
+
+    <!-- Comment Input -->
+    <div class="flex items-center mt-2">
+      <img [src]="userProfileImage" class="h-8 w-8 rounded-full" alt="Your Profile Picture" />
+      <input
+        [(ngModel)]="newCommentText"
+        type="text"
+        placeholder="Write a comment..."
+        class="w-full ml-2 p-2 border rounded-lg"
+      />
+      <button (click)="addComment()" class="ml-2 bg-blue-500 text-white py-1 px-4 rounded">Post</button>
+    </div>
+  </div>
+</div>
