@@ -60,12 +60,19 @@ export class ProfileComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.profilePictureBase64 = reader.result as string;
-        this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(this.profilePictureBase64); // Display image preview
+        const result = reader.result as string;
+        
+        // Remove "data:image/png;base64," or any other data prefix
+        this.profilePictureBase64 = result.replace(/^data:image\/[a-z]+;base64,/, '');
+        
+        // Display image preview with the original result
+        this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(result);
       };
+      
       reader.readAsDataURL(file); // Encode image to Base64
     }
   }
+  
 
   private fetchUserProfile(userId: number): void {
     this.authService.getUserProfile(userId).subscribe({
@@ -75,7 +82,7 @@ export class ProfileComponent implements OnInit {
         this.lastName = data.lastName || '';
         this.email = data.email || '';
         this.profilePicture = data.userImg && this.isBase64(data.userImg) 
-          ? this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${data.userImg}`)
+          ? this.sanitizer.bypassSecurityTrustUrl(`${data.userImg}`)
           : '/assets/images/brocode.png';
       },
       error: (err) => console.error('Error fetching user profile:', err)
