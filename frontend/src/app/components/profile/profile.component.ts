@@ -77,23 +77,25 @@ export class ProfileComponent implements OnInit {
   private fetchUserProfile(userId: number): void {
     this.authService.getUserProfile(userId).subscribe({
       next: (data) => {
-        console.log(data)
+        console.log(data);
         this.firstName = data.firstName || '';
         this.lastName = data.lastName || '';
         this.email = data.email || '';
-        this.profilePicture = data.userImg && this.isBase64(data.userImg) 
-          ? this.sanitizer.bypassSecurityTrustUrl(`${data.userImg}`)
-          : '/assets/images/brocode.png';
+        
+        // Check if `userImg` exists and is Base64 encoded
+        if (data.userImg && this.isBase64(data.userImg)) {
+          this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${data.userImg}`);
+        } else {
+          this.profilePicture = '/assets/images/brocode.png'; // Default image if invalid or missing
+        }
       },
       error: (err) => console.error('Error fetching user profile:', err)
     });
   }
-
+  
   private isBase64(str: string): boolean {
-    try {
-      return btoa(atob(str)) === str;
-    } catch (err) {
-      return false;
-    }
+    const base64Pattern = /^(?:[A-Za-z0-9+\/]{4})*?(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/;
+    return base64Pattern.test(str);
   }
+  
 }
