@@ -77,34 +77,42 @@ export class PostComponent implements OnInit {
       console.error('Cannot create post without content or image.');
       return;
     }
-
+  
     const postData = {
       post: {
         content: this.newPostContent,
         image: this.postImageBase64 ? `data:${this.postImageMimeType};base64,${this.postImageBase64}` : ''
       }
     };
-
+  
     console.log("Attempting to create post with data:", postData);
-
+  
     this.postService.createPost(postData).subscribe({
       next: (response) => {
+        // Prepare the new post data with the decoded image
         const newPost = {
           content: response.content,
           image: response.image ? this.decodeBase64Image(response.image) : '', 
           timestamp: new Date().toLocaleString(),
           comments: []
         };
-
+  
+        // Add the new post to the beginning of the posts array
         this.posts.unshift(newPost);
+  
+        // Reset form inputs
         this.newPostContent = '';
         this.newPostImage = '';
         this.isExpanded = false;
         this.resetForm();
+  
+        // Optionally, reload posts to keep the list updated
+        this.loadPosts();
       },
       error: (error) => console.error('Failed to create post:', error),
     });
   }
+  
 
   loadPosts() {
     this.postService.getAllPosts().subscribe({
