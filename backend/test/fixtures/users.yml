@@ -1,7 +1,6 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  userId: 1
   firstName: MyString
   lastName: MyString
   email: MyString
@@ -9,7 +8,6 @@ one:
   userImg: MyText
 
 two:
-  userId: 1
   firstName: MyString
   lastName: MyString
   email: MyString

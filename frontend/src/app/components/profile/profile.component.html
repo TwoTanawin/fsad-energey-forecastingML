@@ -1,47 +1,90 @@
-<form (submit)="saveProfile()">
-  <div class="grid grid-cols-3 gap-8">
-    <div class="col-span-1 flex flex-col items-center">
-      <img
-        [src]="profilePicture"
-        alt="Profile Picture"
-        class="h-32 w-32 rounded-full object-cover mb-4"
-      />
-      <input type="file" (change)="onImageSelected($event)" class="text-sm" />
-    </div>
-
-    <div class="col-span-2 grid grid-cols-2 gap-4">
-      <div class="col-span-2">
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input
-          id="username"
-          type="text"
-          name="username"
-          [(ngModel)]="profile.username"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          disabled
-        />
-      </div>
-
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          [(ngModel)]="profile.email"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          disabled
-        />
-      </div>
-    </div>
-  </div>
-
-  <div class="flex justify-end mt-6">
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-gray-800">Profile</h2>
     <button
-      type="submit"
-      class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none"
+      class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500"
+      (click)="toggleEditMode()"
     >
-      Save Changes
+      {{ isEditing ? 'Cancel' : 'Edit Profile' }}
     </button>
   </div>
-</form>
+
+  <div class="mt-4">
+    <!-- View Mode -->
+    <div *ngIf="!isEditing">
+      <div class="flex items-center space-x-6">
+        <img class="w-24 h-24 rounded-full object-cover" [src]="profilePicture" alt="Profile Picture">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">{{ firstName }} {{ lastName }}</h2>
+          <p class="text-gray-600">{{ email }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Mode -->
+    <div *ngIf="isEditing">
+      <form (ngSubmit)="saveProfile()">
+        <div class="flex items-center space-x-6">
+          <img class="w-24 h-24 rounded-full object-cover" [src]="profilePicture" alt="Profile Picture">
+          <input
+            type="file"
+            (change)="onImageSelected($event)"
+            class="text-sm mt-2 border border-gray-300 rounded-md px-2 py-1"
+          />
+        </div>
+
+        <div class="mt-8 grid grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-gray-700">First Name</span>
+            <input
+              [(ngModel)]="firstName"
+              name="firstName"
+              type="text"
+              class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          </label>
+          <label class="block">
+            <span class="text-gray-700">Last Name</span>
+            <input
+              [(ngModel)]="lastName"
+              name="lastName"
+              type="text"
+              class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="mt-4">
+          <label class="block">
+            <span class="text-gray-700">Email</span>
+            <input
+              [(ngModel)]="email"
+              name="email"
+              type="email"
+              class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-4">
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+            (click)="toggleEditMode()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

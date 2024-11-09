@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -8,51 +8,28 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  id: number | null = null;  // Variable to store the userId (references :user)
-  email: string = ''; 
-
   isEditing = false;
+  id: number | null = null;
+  email: string = ''; 
+  firstName: string = '';
+  lastName: string = '';
   profilePicture: SafeUrl | string = '/assets/images/brocode.png';  // Default image
-  profile = {
-    username: '',
-    email: '',
-    userImg: ''
-  };
+  private profilePictureBase64: string = '';
 
-  constructor(private authService: AuthService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private authService: AuthService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
-    this.authService.getUserInfo().subscribe({
-      next: (user) => {
-        this.id = user.id;
-        console.log('User ID:', this.id);  
-        this.email = user.email;  // Assuming this comes from a different API than UserProfile 
-      },
-      error: (error) => {
-        console.error('Error fetching user info:', error);
-        alert('Failed to fetch user info');
-      }
-    });
-  }
-
-  fetchUserProfile(): void {
-    if (this.id !== null) {  // Check if this.id is not null
-      this.authService.getUserProfile(this.id).subscribe(
-        (data) => {
-          console.log("Fetching user profile with ID:", this.id);
-          this.profile.username = data.username;
-          this.profile.email = data.email;
-          this.profilePicture = data.userImg
-            ? this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${data.userImg}`)
-            : '/assets/images/brocode.png';
-        },
-        (error) => {
-          console.log("Error fetching user profile for ID:", this.id);
-          console.error("Error fetching user info:", error);
-        }
-      );
+    // Use AuthService to retrieve the current user ID
+    this.id = this.authService.getCurrentUserId();
+    console.log("profile component : ")
+    console.log(this.id)
+    if (this.id) {
+      this.fetchUserProfile(this.id);
     } else {
-      console.error("User ID is null, cannot fetch user profile.");
+      console.error('User ID not found');
     }
   }
 
@@ -60,41 +37,56 @@ export class ProfileComponent implements OnInit {
     this.isEditing = !this.isEditing;
   }
 
-  onImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64String = e.target?.result?.toString();
-        if (base64String) {
-          this.profile.userImg = base64String.split(',')[1];
-          this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(base64String);
-        }
+  saveProfile(): void {
+    if (this.id) {
+      const userData = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        userImg: this.profilePictureBase64 // Send Base64-encoded image
       };
-      reader.readAsDataURL(file);
+      this.authService.updateUserProfile(this.id, userData).subscribe({
+        next: () => {
+          console.log('Profile updated successfully');
+          this.toggleEditMode(); // Exit edit mode after saving
+        },
+        error: (err) => console.error('Error updating profile:', err)
+      });
     }
   }
 
-  saveProfile(): void {
-    if (this.id !== null) {  // Check if this.id is not null
-      const updatedProfile = {
-        username: this.profile.username,
-        email: this.profile.email,
-        userImg: this.profile.userImg
+  onImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.profilePictureBase64 = reader.result as string;
+        this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(this.profilePictureBase64); // Display image preview
       };
-  
-      this.authService.updateUserProfile(this.id, updatedProfile).subscribe(
-        (response) => {
-          console.log("Profile updated successfully:", response);
-          this.isEditing = false;
-        },
-        (error) => {
-          console.log("Error updating profile for ID:", this.id);
-          console.error("Error updating profile:", error);
-        }
-      );
-    } else {
-      console.error("User ID is null, cannot update profile.");
+      reader.readAsDataURL(file); // Encode image to Base64
+    }
+  }
+
+  private fetchUserProfile(userId: number): void {
+    this.authService.getUserProfile(userId).subscribe({
+      next: (data) => {
+        console.log(data)
+        this.firstName = data.firstName || '';
+        this.lastName = data.lastName || '';
+        this.email = data.email || '';
+        this.profilePicture = data.userImg && this.isBase64(data.userImg) 
+          ? this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${data.userImg}`)
+          : '/assets/images/brocode.png';
+      },
+      error: (err) => console.error('Error fetching user profile:', err)
+    });
+  }
+
+  private isBase64(str: string): boolean {
+    try {
+      return btoa(atob(str)) === str;
+    } catch (err) {
+      return false;
     }
   }
 }

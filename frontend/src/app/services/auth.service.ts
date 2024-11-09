@@ -38,10 +38,16 @@ export class AuthService {
     );
   }
 
-  // Get user info after login
-  getUserInfo(): Observable<any> {
-    const headers = this.getAuthHeaders();
-    return this.http.get(`${this.BASE_URL}/user_info`, { headers });
+  // Function to get current user ID from the token
+  getCurrentUserId(): number | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decode JWT payload
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log(payload.user_id)
+      return payload.user_id; // Assuming userId is stored in the payload
+    }
+    return null;
   }
 
   // Get specific user profile

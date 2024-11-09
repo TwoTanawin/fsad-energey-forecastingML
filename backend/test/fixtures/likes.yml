@@ -1,13 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  likeID: 1
   isLiked: false
   post: one
   user: one
 
 two:
-  likeID: 1
   isLiked: false
   post: two
   user: two

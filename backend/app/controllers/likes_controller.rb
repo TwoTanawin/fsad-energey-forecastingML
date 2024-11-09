@@ -15,7 +15,17 @@ class LikesController < ApplicationController
 
   # POST /likes
   def create
+    # Check if the user already liked this post
+    existing_like = Like.find_by(user_id: @current_user.id, post_id: like_params[:post_id])
+
+    if existing_like
+      render json: { error: "User already liked this post" }, status: :unprocessable_entity
+      return
+    end
+
+    # Create a new like
     @like = Like.new(like_params)
+    @like.user_id = @current_user.id  # Set user_id to the current user
 
     if @like.save
       render json: @like, status: :created, location: @like
@@ -50,6 +60,6 @@ class LikesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def like_params
-    params.require(:like).permit(:likeID, :isLiked, :post_id, :user_id)
+    params.require(:like).permit(:isLiked, :post_id)
   end
 end

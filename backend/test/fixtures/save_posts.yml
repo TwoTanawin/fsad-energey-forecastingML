@@ -1,11 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  savePostID: 1
   post: one
   user: one
 
 two:
-  savePostID: 1
   post: two
   user: two

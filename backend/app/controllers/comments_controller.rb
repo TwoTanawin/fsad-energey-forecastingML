@@ -16,6 +16,7 @@ class CommentsController < ApplicationController
   # POST /comments
   def create
     @comment = Comment.new(comment_params)
+    @comment.user_id = @current_user.id  # Set the user_id to the current logged-in user
 
     if @comment.save
       render json: @comment, status: :created, location: @comment
@@ -50,6 +51,6 @@ class CommentsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def comment_params
-    params.require(:comment).permit(:commentID, :content, :post_id, :user_id)
+    params.require(:comment).permit(:content, :post_id)
   end
 end

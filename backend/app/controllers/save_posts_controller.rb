@@ -15,7 +15,17 @@ class SavePostsController < ApplicationController
 
   # POST /save_posts
   def create
+    # Check if the post is already saved by the current user
+    existing_save = SavePost.find_by(user_id: @current_user.id, post_id: save_post_params[:post_id])
+
+    if existing_save
+      render json: { error: "Post already saved" }, status: :unprocessable_entity
+      return
+    end
+
+    # Create a new saved post
     @save_post = SavePost.new(save_post_params)
+    @save_post.user_id = @current_user.id  # Set user_id to the current user
 
     if @save_post.save
       render json: @save_post, status: :created, location: @save_post
@@ -44,10 +54,12 @@ class SavePostsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_save_post
     @save_post = SavePost.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Save post not found" }, status: :not_found
   end
 
   # Only allow a list of trusted parameters through.
   def save_post_params
-    params.require(:save_post).permit(:savePostID, :post_id, :user_id)
+    params.require(:save_post).permit(:post_id)
   end
 end

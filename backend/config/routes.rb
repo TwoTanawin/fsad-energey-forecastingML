@@ -1,33 +1,23 @@
 Rails.application.routes.draw do
-  # Define only the routes needed for authentication
-  resources :users, only: [ :index, :show, :update, :destroy ]
-  post "/register", to: "authenticate#register"
-  post "/login", to: "authenticate#login"
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Standard CRUD actions for users (optional if needed)
-  # resources :users, only: [ :index, :show, :update, :destroy ]
-
-  # Health check route
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Define the root path route (optional, update as needed)
+  # Defines the root path route ("/")
   # root "posts#index"
+  post "/register", to: "authentication#register"
+  post "/login", to: "authentication#login"
 
-  resources :device_auth, only: [ :index, :show ] do
-    collection do
-      post "register_device"
-    end
-  end
-
-  resources :devices
-
-  post "login_device", to: "device_auth#login_device"
+  get "/users", to: "authentication#index"
+  get "/users/:id", to: "authentication#show"
+  put "/users/:id", to: "authentication#update"
+  patch "/users/:id", to: "authentication#update"
+  delete "/users/:id", to: "authentication#destroy"
 
   resources :posts, only: [ :index, :show, :create, :update, :destroy ]
-
-  resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
-
-  resources :likes, only: [ :index, :show, :create, :update, :destroy ]
-
   resources :comments, only: [ :index, :show, :create, :update, :destroy ]
+  resources :likes, only: [ :index, :show, :create, :update, :destroy ]
+  resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
 end
