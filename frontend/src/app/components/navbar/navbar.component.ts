@@ -20,35 +20,36 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   profileMenuOpen = false;
-  profileImage: string = '';  // This will store the decoded profile image
+  profileImage: string = 'https://flowbite.com/application-ui/demo/images/users/jese-leos-2x.png';  // Default image
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    // this.fetchUserProfile();
+    this.fetchUserProfile();
   }
 
-  // // Fetch the user profile data and decode the profile image
-  // fetchUserProfile() {
-  //   const token = localStorage.getItem('token'); // Retrieve the token from storage
-  //   if (token) {
-  //     this.authService.getUserProfile(token).subscribe({
-  //       next: (profileData) => {
-  //         if (profileData && profileData.userImg) {
-  //           this.profileImage = this.decodeBase64Image(profileData.userImg);
-  //         } else {
-  //           // If no profile picture, use a default image
-  //           this.profileImage = 'https://flowbite.com/application-ui/demo/images/users/jese-leos-2x.png';
-  //         }
-  //       },
-  //       error: (error) => {
-  //         console.error('Failed to fetch user profile:', error);
-  //       }
-  //     });
-  //   } else {
-  //     console.error('No token found, unable to fetch user profile.');
-  //   }
-  // }
+  // Fetch the user profile data and decode the profile image
+  fetchUserProfile() {
+    const userId = this.authService.getCurrentUserId(); // Get current user ID from AuthService
+    if (userId) {
+      this.authService.getUserProfile(userId).subscribe({
+        next: (profileData) => {
+          if (profileData && profileData.userImg) {
+            // Decode Base64 image for display
+            this.profileImage = this.decodeBase64Image(profileData.userImg);
+          } else {
+            // Use default image if no profile picture
+            this.profileImage = 'https://flowbite.com/application-ui/demo/images/users/jese-leos-2x.png';
+          }
+        },
+        error: (error) => {
+          console.error('Failed to fetch user profile:', error);
+        }
+      });
+    } else {
+      console.error('User ID not found, unable to fetch user profile.');
+    }
+  }
 
   // Decode Base64 image
   decodeBase64Image(base64String: string): string {
