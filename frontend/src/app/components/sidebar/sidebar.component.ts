@@ -10,6 +10,7 @@ export class SidebarComponent {
     { name: 'Home', icon: 'home', href: '/map', current: true },
     { name: 'Dashboard', icon: 'dashboard', href: '/dashboard', current: false },
     { name: 'Community', icon: 'community', href: '/post', current: false },
+    { name: 'Saved Posts', icon: 'community', href: '/saved-post', current: false },
   ];
 
   topics = [

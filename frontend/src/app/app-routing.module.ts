@@ -7,6 +7,7 @@ import { MapComponent } from './components/map/map.component';
 import { DevicesRegisterComponent } from './components/devices-register/devices-register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { PostComponent } from './components/post/post.component';
+import { SavedPostsComponent } from './components/saved-posts/saved-posts.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -16,6 +17,7 @@ const routes: Routes = [
   {path: 'devices-register', component: DevicesRegisterComponent},
   {path: 'user-profile', component: ProfileComponent},
   {path: 'post', component: PostComponent},
+  {path: 'saved-post', component: SavedPostsComponent},
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
 ];
 

@@ -24,6 +24,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { CreateProfileComponent } from './components/create-profile/create-profile.component';
 import { PostComponent } from './components/post/post.component';
 import { PostInteractionComponent } from './components/post-interaction/post-interaction.component';
+import { SavedPostsComponent } from './components/saved-posts/saved-posts.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { PostInteractionComponent } from './components/post-interaction/post-int
     CreateProfileComponent,
     PostComponent,
     PostInteractionComponent,
+    SavedPostsComponent,
   ],
   imports: [
     BrowserModule,

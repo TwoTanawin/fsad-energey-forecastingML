@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   delete "/save_posts/post/:post_id", to: "save_posts#destroy_by_post_id", as: :destroy_save_post_by_post_id
 
+  get "/save_posts/user", to: "save_posts#user_saved_posts", as: :user_saved_posts
   # Other resources and routes
   resources :save_posts, only: [ :index, :show, :create, :update ] do
     member do

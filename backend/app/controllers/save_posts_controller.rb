@@ -8,6 +8,12 @@ class SavePostsController < ApplicationController
     render json: @save_posts
   end
 
+  # GET /save_posts/user
+  def user_saved_posts
+    saved_posts = SavePost.where(user_id: @current_user.id).includes(:post).map(&:post)
+    render json: saved_posts, status: :ok
+  end
+
   # GET /save_posts/:id
   def show
     render json: @save_post

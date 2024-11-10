@@ -73,7 +73,13 @@ export class PostService {
   
   unpinPost(postId: number): Observable<any> {
     return this.http.delete(`${this.BASE_URL}/save_posts/post/${postId}`, { headers: this.getAuthHeaders() });
-  }  
+  }
+  
+
+  getUserSavedPosts(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.BASE_URL}/save_posts/user`, { headers: this.getAuthHeaders() });
+  }
+
 
   isPostSaved(postId: number): Observable<{ isSaved: boolean }> {
     return this.http.get<{ isSaved: boolean }>(`${this.BASE_URL}/save_posts/${postId}/check`, { headers: this.getAuthHeaders() });
