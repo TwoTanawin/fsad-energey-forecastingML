@@ -106,4 +106,30 @@ export class PostService {
     return this.http.delete(`${this.BASE_URL}/comments/${commentId}`, { headers: this.getAuthHeaders() });
   }
 
+  likePost(postId: number): Observable<any> {
+    return this.http.post(`${this.BASE_URL}/likes`, { like: { post_id: postId } }, { headers: this.getAuthHeaders() });
+  }
+
+  unlikePost(postId: number): Observable<any> {
+    return this.http.delete(`${this.BASE_URL}/likes/${postId}`, { headers: this.getAuthHeaders() });
+  }
+
+  isPostLiked(postId: number): Observable<{ isLiked: boolean; likeCount: number }> {
+    return this.http.get<{ isLiked: boolean; likeCount: number }>(`${this.BASE_URL}/likes/check/${postId}`, { headers: this.getAuthHeaders() });
+  }
+
+  toggleLike(postId: number): Observable<any> {
+    const likeData = { post_id: postId };
+    return this.http.post(`${this.BASE_URL}/likes/toggle`, likeData, { headers: this.getAuthHeaders() });
+  }
+  
+  
+  getLikeStatus(postId: number): Observable<{ isLiked: boolean; likeCount: number }> {
+    return this.http.get<{ isLiked: boolean; likeCount: number }>(`${this.BASE_URL}/posts/${postId}/like_status`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+  
+  
+
 }

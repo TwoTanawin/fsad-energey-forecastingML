@@ -23,11 +23,12 @@
       <!-- Post Actions -->
       <div class="flex justify-between mt-4 text-sm text-gray-500">
         <div>
-          <button (click)="likePost()" class="mr-4">Like</button>
+          <button (click)="likePost()">{{ isLiked ? 'Unlike' : 'Like' }} ({{ likeCount }})</button>
           <button (click)="toggleEdit()">Edit</button>
           <button (click)="sharePost()">Share</button>
         </div>
       </div>
+      
 
   <!-- Post Edit Mode -->
   <div *ngIf="isEditing" class="mt-4">

@@ -32,6 +32,11 @@ Rails.application.routes.draw do
     end
   end
 
+  get "/likes/check/:post_id", to: "likes#check", as: :check_like
+  post "/likes/toggle", to: "likes#toggle"
+  get "/posts/:id/like_status", to: "posts#like_status"
+  # get "/posts/:id/like_status", to: "posts#like_status"
+
   resources :posts do
     resources :comments, only: [ :index, :create ]
   end

@@ -26,7 +26,7 @@ export class PostInteractionComponent implements OnInit {
   @Input() profileImage: SafeUrl | string = '/assets/images/brocode.png';
   @Input() timestamp: string = '';
 
-  isPinned: boolean = false; 
+  isPinned: boolean = false;
 
   isEditing = false;
   comments: Comment[] = [];
@@ -40,16 +40,22 @@ export class PostInteractionComponent implements OnInit {
   @Output() pinPost = new EventEmitter<void>();
   @Output() updatePostContent = new EventEmitter<string>();
 
+  // @Input() postId: number = 0;
+  // @Input() currentUserId: number = 0;
+  likeCount: number = 0;
+  isLiked: boolean = false;
+
   constructor(
     private authService: AuthService,
     private postService: PostService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
     this.loadComments();
     this.checkIfPinned();
+    this.loadLikeStatus();
   }
 
   loadUserProfile(): void {
@@ -87,8 +93,8 @@ export class PostInteractionComponent implements OnInit {
       },
     });
   }
-  
-  
+
+
 
   addComment(): void {
     if (this.newCommentText.trim()) {
@@ -96,7 +102,7 @@ export class PostInteractionComponent implements OnInit {
         content: this.newCommentText,
         post_id: this.postId, // Ensure post_id is passed correctly
       };
-      
+
       this.postService.addCommentToPost(this.postId, commentData).subscribe({
         next: (comment: any) => {
           this.comments.push({
@@ -157,7 +163,7 @@ export class PostInteractionComponent implements OnInit {
       });
     }
   }
-  
+
 
   toggleEdit() {
     if (this.currentUserId && this.currentUserId === this.postOwnerId) {
@@ -183,7 +189,7 @@ export class PostInteractionComponent implements OnInit {
         if (result.isConfirmed) {
           this.updatePostContent.emit(updatedContent);
           this.isEditing = false;
-  
+
           Swal.fire({
             icon: 'success',
             title: 'Updated',
@@ -196,9 +202,9 @@ export class PostInteractionComponent implements OnInit {
     }
   }
 
-  likePost() {
-    console.log('Post liked!');
-  }
+  // likePost() {
+  //   console.log('Post liked!');
+  // }
 
   sharePost() {
     console.log('Post shared!');
@@ -266,5 +272,34 @@ export class PostInteractionComponent implements OnInit {
         },
       });
     }
-  } 
+  }
+
+  loadLikeStatus() {
+    this.postService.getLikeStatus(this.postId).subscribe({
+      next: (response) => {
+        this.isLiked = response.isLiked; // Boolean value representing if the user has liked this post
+        this.likeCount = response.likeCount; // Total like count for the post
+      },
+      error: (error) => console.error('Error loading like status:', error),
+    });
+  }
+
+  // Method to toggle the like status
+  likePost() {
+    this.postService.toggleLike(this.postId).subscribe({
+      next: (response) => {
+        this.isLiked = response.isLiked; // `isLiked` is toggled by the backend
+        this.likeCount = response.likeCount; // Update the like count from the response
+      },
+      error: (error) => {
+        console.error('Error toggling like:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to toggle like.',
+        });
+      },
+    });
+  }
+
 }
