@@ -63,7 +63,8 @@ export class SavedPostsComponent implements OnInit {
   loadSavedPosts() {
     this.postService.getUserSavedPosts().subscribe({
       next: (posts: any[]) => {
-        posts.forEach(post => {
+        // Reverse the posts array to get newest to oldest
+        posts.reverse().forEach(post => {
           this.authService.getUserProfile(post.user_id).subscribe({
             next: (ownerProfile) => {
               this.savedPosts.push({
@@ -87,6 +88,8 @@ export class SavedPostsComponent implements OnInit {
       error: (error: any) => console.error('Failed to load saved posts:', error),
     });
   }
+  
+  
 
   private decodeBase64Image(base64String: string | undefined | null): string {
     if (!base64String) {
