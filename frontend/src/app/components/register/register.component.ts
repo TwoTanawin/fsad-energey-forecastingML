@@ -9,7 +9,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  username: string = '';
+  firstName: string = '';
+  lastName: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -31,7 +32,8 @@ export class RegisterComponent {
     }
 
     const userData = {
-      username: this.username,
+      firstName: this.firstName,
+      lastName: this.lastName,
       email: this.email,
       password: this.password
     };

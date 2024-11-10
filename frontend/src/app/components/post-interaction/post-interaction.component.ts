@@ -55,7 +55,7 @@ export class PostInteractionComponent implements OnInit {
     this.loadUserProfile();
     this.loadComments();
     this.checkIfPinned();
-    this.loadLikeStatus();
+    // this.loadLikeStatus();
   }
 
   loadUserProfile(): void {

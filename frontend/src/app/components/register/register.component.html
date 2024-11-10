@@ -2,7 +2,11 @@
   <div class="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
     <!-- Logo -->
     <div class="flex justify-center">
-      <img src="../../../assets/images/GoRotine-removebg-preview.png" alt="Your Logo" class="h-20">
+      <img
+        src="../../../assets/images/GoRotine-removebg-preview.png"
+        alt="Your Logo"
+        class="h-20"
+      />
     </div>
 
     <!-- Title -->
@@ -14,60 +18,90 @@
     <form (submit)="onSubmit()" class="mt-8 space-y-6">
       <!-- Username -->
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input 
-          type="text" 
+        <label for="firstName" class="block text-sm font-medium text-gray-700"
+          >firstName</label
+        >
+        <input
+          type="text"
           id="username"
-          [(ngModel)]="username" 
-          name="username"
-          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
-          placeholder="Enter your username"
-          required>
+          [(ngModel)]="firstName"
+          name="firstName"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter your firstName"
+          required
+        />
+      </div>
+
+      <!-- Username -->
+      <div>
+        <label for="lastName" class="block text-sm font-medium text-gray-700"
+          >lastName</label
+        >
+        <input
+          type="text"
+          id="lastName"
+          [(ngModel)]="lastName"
+          name="lastName"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter your lastName"
+          required
+        />
       </div>
 
       <!-- Email Address -->
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-        <input 
-          type="email" 
+        <label for="email" class="block text-sm font-medium text-gray-700"
+          >Email Address</label
+        >
+        <input
+          type="email"
           id="email"
           [(ngModel)]="email"
           name="email"
-          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           placeholder="Enter your email"
-          required>
+          required
+        />
       </div>
 
       <!-- Password -->
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input 
-          type="password" 
+        <label for="password" class="block text-sm font-medium text-gray-700"
+          >Password</label
+        >
+        <input
+          type="password"
           id="password"
           [(ngModel)]="password"
           name="password"
-          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           placeholder="Enter your password"
-          required>
+          required
+        />
       </div>
 
       <!-- Confirm Password -->
       <div>
-        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-        <input 
-          type="password" 
+        <label
+          for="confirmPassword"
+          class="block text-sm font-medium text-gray-700"
+          >Confirm Password</label
+        >
+        <input
+          type="password"
           id="confirmPassword"
           [(ngModel)]="confirmPassword"
           name="confirmPassword"
-          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           placeholder="Confirm your password"
-          required>
+          required
+        />
       </div>
 
       <!-- Register Button -->
       <div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           class="w-full bg-indigo-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
           Register
@@ -77,10 +111,13 @@
 
     <!-- Sign-in link -->
     <p class="mt-6 text-center text-sm text-gray-600">
-      Already have an account? 
-      <a routerLink="/login" class="font-semibold text-indigo-600 hover:text-indigo-500">
-        Sign in here
-      </a>.
+      Already have an account?
+      <a
+        routerLink="/login"
+        class="font-semibold text-indigo-600 hover:text-indigo-500"
+      >
+        Sign in here </a
+      >.
     </p>
   </div>
 </div>
