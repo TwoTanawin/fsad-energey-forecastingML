@@ -114,13 +114,37 @@ export class PostInteractionComponent implements OnInit {
 
   deleteComment(commentId: number, commentUserId: number): void {
     if (this.currentUserId === commentUserId) {
-      this.postService.deleteComment(commentId).subscribe({
-        next: () => {
-          this.comments = this.comments.filter(comment => comment.id !== commentId);
-        },
-        error: (error) => {
-          console.error('Failed to delete comment:', error);
-        },
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to delete this comment?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Proceed with deletion
+          this.postService.deleteComment(commentId).subscribe({
+            next: () => {
+              this.comments = this.comments.filter(comment => comment.id !== commentId);
+              Swal.fire({
+                icon: 'success',
+                title: 'Deleted',
+                text: 'The comment has been successfully deleted!',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            },
+            error: (error) => {
+              console.error('Failed to delete comment:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error deleting the comment. Please try again.',
+              });
+            }
+          });
+        }
       });
     } else {
       Swal.fire({
@@ -130,6 +154,7 @@ export class PostInteractionComponent implements OnInit {
       });
     }
   }
+  
 
   toggleEdit() {
     if (this.currentUserId && this.currentUserId === this.postOwnerId) {
