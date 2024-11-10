@@ -18,6 +18,15 @@
     <img *ngIf="postImage" class="mt-2 rounded-lg" [src]="postImage" alt="Post Image" />
   </div>
 
+      <!-- Post Actions -->
+      <div class="flex justify-between mt-4 text-sm text-gray-500">
+        <div>
+          <button (click)="likePost()" class="mr-4">Like</button>
+          <button (click)="toggleEdit()">Edit</button>
+          <button (click)="sharePost()">Share</button>
+        </div>
+      </div>
+
   <!-- Post Edit Mode -->
   <div *ngIf="isEditing" class="mt-4">
     <textarea [(ngModel)]="postContent" rows="3" class="w-full p-2 border rounded-lg"></textarea>
