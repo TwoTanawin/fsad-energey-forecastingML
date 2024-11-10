@@ -26,6 +26,8 @@ export class PostInteractionComponent implements OnInit {
   @Input() profileImage: SafeUrl | string = '/assets/images/brocode.png';
   @Input() timestamp: string = '';
 
+  isPinned: boolean = false; 
+
   isEditing = false;
   comments: Comment[] = [];
   newCommentText: string = '';
@@ -47,6 +49,7 @@ export class PostInteractionComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserProfile();
     this.loadComments();
+    this.checkIfPinned();
   }
 
   loadUserProfile(): void {
@@ -205,7 +208,63 @@ export class PostInteractionComponent implements OnInit {
     this.deletePost.emit();
   }
 
-  pin() {
-    this.pinPost.emit();
+  checkIfPinned(): void {
+    this.postService.isPostSaved(this.postId).subscribe({
+      next: (response) => {
+        this.isPinned = response.isSaved; // Set `isPinned` based on backend response
+      },
+      error: (error) => {
+        console.error('Error checking if post is saved:', error);
+      },
+    });
   }
+
+  pin() {
+    if (this.isPinned) {
+      console.log(this.isPinned)
+      // If already pinned, unpin it
+      this.postService.unpinPost(this.postId).subscribe({
+        next: () => {
+          this.isPinned = false;
+          Swal.fire({
+            icon: 'success',
+            title: 'Unpinned',
+            text: 'Post has been successfully unpinned!',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        },
+        error: (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to unpin post.',
+          });
+          console.error('Failed to unpin post:', error);
+        },
+      });
+    } else {
+      // If not pinned, pin it
+      this.postService.pinPost(this.postId).subscribe({
+        next: () => {
+          this.isPinned = true;
+          Swal.fire({
+            icon: 'success',
+            title: 'Pinned',
+            text: 'Post has been successfully pinned!',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        },
+        error: (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to pin post.',
+          });
+          console.error('Failed to pin post:', error);
+        },
+      });
+    }
+  } 
 }

@@ -32,6 +32,13 @@ export class PostService {
     return this.http.delete(`${this.BASE_URL}/posts/${postId}`, { headers: this.getAuthHeaders() });
   }
 
+  // post.service.ts
+  getPosts(page: number = 1, perPage: number = 10): Observable<any> {
+    return this.http.get(`${this.BASE_URL}/posts?page=${page}&per_page=${perPage}`);
+  }
+
+
+
   getPostById(postId: number): Observable<any> {
     return this.http.get(`${this.BASE_URL}/posts/${postId}`, { headers: this.getAuthHeaders() });
   }
@@ -58,6 +65,20 @@ export class PostService {
 
     return this.http.post<Comment>(`${this.BASE_URL}/posts/${postId}/comments`, commentData, { headers });
   }
+
+  pinPost(postId: number): Observable<any> {
+    const saveData = { save_post: { post_id: postId } };
+    return this.http.post(`${this.BASE_URL}/save_posts`, saveData, { headers: this.getAuthHeaders() });
+  }
+  
+  unpinPost(postId: number): Observable<any> {
+    return this.http.delete(`${this.BASE_URL}/save_posts/post/${postId}`, { headers: this.getAuthHeaders() });
+  }  
+
+  isPostSaved(postId: number): Observable<{ isSaved: boolean }> {
+    return this.http.get<{ isSaved: boolean }>(`${this.BASE_URL}/save_posts/${postId}/check`, { headers: this.getAuthHeaders() });
+  }
+  
 
   getCommentsForPost(postId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.BASE_URL}/posts/${postId}/comments`, { headers: this.getAuthHeaders() });

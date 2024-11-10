@@ -43,10 +43,35 @@ class SavePostsController < ApplicationController
     end
   end
 
-  # DELETE /save_posts/:id
   def destroy
-    @save_post.destroy
-    head :no_content
+    Rails.logger.info "Attempting to delete SavePost with user_id: #{@current_user.id}, post_id: #{params[:id]}"
+    save_post = SavePost.find_by(user_id: @current_user.id, post_id: params[:id])
+
+    if save_post
+      save_post.destroy
+      head :no_content
+    else
+      Rails.logger.info "SavePost not found for user_id: #{@current_user.id}, post_id: #{params[:id]}"
+      render json: { error: "Save post not found" }, status: :not_found
+    end
+  end
+
+    # DELETE /save_posts/post/:post_id
+    def destroy_by_post_id
+      save_post = SavePost.find_by(user_id: @current_user.id, post_id: params[:post_id])
+
+      if save_post
+        save_post.destroy
+        head :no_content
+      else
+        render json: { error: "Save post not found" }, status: :not_found
+      end
+    end
+
+
+  def check
+    is_saved = SavePost.exists?(user_id: @current_user.id, post_id: params[:id])
+    render json: { isSaved: is_saved }
   end
 
   private

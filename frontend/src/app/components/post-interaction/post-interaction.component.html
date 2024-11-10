@@ -7,7 +7,9 @@
       <p class="text-sm text-gray-500">{{ timestamp }}</p>
     </div>
     <div class="ml-auto">
-      <button (click)="pin()" class="text-gray-500 hover:text-blue-500">Pin</button>
+      <button (click)="pin()" class="text-gray-500 hover:text-blue-500">
+        {{ isPinned ? 'Unpin' : 'Pin' }}
+      </button>      
       <button (click)="delete()" class="text-gray-500 hover:text-red-500">Delete</button>
     </div>
   </div>

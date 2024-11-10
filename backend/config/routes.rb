@@ -17,9 +17,19 @@ Rails.application.routes.draw do
   delete "/users/:id", to: "authentication#destroy"
 
   resources :posts, only: [ :index, :show, :create, :update, :destroy ]
+
+
   # resources :comments, only: [ :index, :show, :create, :update, :destroy ]
   resources :likes, only: [ :index, :show, :create, :update, :destroy ]
-  resources :save_posts, only: [ :index, :show, :create, :update, :destroy ]
+
+  delete "/save_posts/post/:post_id", to: "save_posts#destroy_by_post_id", as: :destroy_save_post_by_post_id
+
+  # Other resources and routes
+  resources :save_posts, only: [ :index, :show, :create, :update ] do
+    member do
+      get "check"  # Adds GET /save_posts/:id/check for the `check` action
+    end
+  end
 
   resources :posts do
     resources :comments, only: [ :index, :create ]
