@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,10 @@ import { map } from 'rxjs/operators';
 export class AuthService {
   private BASE_URL = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   // Store token in localStorage for persistent access
   private getAuthHeaders(): HttpHeaders {
@@ -65,4 +69,10 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+
+    // Sign-out method
+    signOut(): void {
+      localStorage.removeItem('token'); // Clear token from storage
+      this.router.navigate(['/login']); // Redirect to login page
+    }
 }
