@@ -4,7 +4,7 @@ BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 
 # Login data
 login_data = {
-    "email": "gogo@Gogo.com",
+    "email": "jojo@jojo.com",
     "password": "securepassword"
 }
 

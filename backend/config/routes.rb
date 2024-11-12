@@ -41,4 +41,10 @@ Rails.application.routes.draw do
     resources :comments, only: [ :index, :create ]
   end
   resources :comments, only: [ :show, :update, :destroy ]
+
+  resources :register_devices, only: [ :create ] do
+    collection do
+      post "authenticate", to: "register_devices#authenticate_device"
+    end
+  end
 end
