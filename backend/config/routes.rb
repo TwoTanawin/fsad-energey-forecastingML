@@ -48,4 +48,7 @@ Rails.application.routes.draw do
       get "hello_world", to: "register_devices#hello_world" # Route for hello_world action
     end
   end
+
+  post "/devices/update_data", to: "devices#update_data"
+  post "/devices/data", to: "devices#create_data"
 end
