@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   resources :register_devices, only: [ :create ] do
     collection do
       post "authenticate", to: "register_devices#authenticate_device"
+      get "hello_world", to: "register_devices#hello_world" # Route for hello_world action
     end
   end
 end
