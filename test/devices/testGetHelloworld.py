@@ -18,7 +18,7 @@ if login_response.status_code == 200:
     print("User JWT Token:", user_token)
 
     # Step 2: Use the provided device token to access the hello_world endpoint
-    device_token = "cffecc99549feaf78d04fa738f3c1a07"  # Provided device token
+    device_token = "5019b0010735425d42dc9d6d20baa1fb"  # Provided device token
 
     # Headers including the device token
     headers = {

@@ -1,9 +1,9 @@
 # app/controllers/register_devices_controller.rb
 class RegisterDevicesController < ApplicationController
   # Endpoint for a device to register and request a token
-  skip_before_action :authorize_request, only: [ :hello_world ]
+  skip_before_action :authorize_request, only: [ :hello_world, :device_info ]
   # before_action :authorize_request
-  before_action :authenticate_device_by_token, only: [ :hello_world ]
+  before_action :authenticate_device_by_token, only: [ :hello_world, :device_info ]
 
 
   def create
@@ -22,6 +22,16 @@ class RegisterDevicesController < ApplicationController
     else
       render json: { error: "Invalid user credentials" }, status: :unauthorized
     end
+  end
+
+  def device_info
+    render json: {
+      device_details: {
+        id: @device.id,
+        address: @device.address,
+        created_at: @device.created_at
+      }
+    }, status: :ok
   end
 
 

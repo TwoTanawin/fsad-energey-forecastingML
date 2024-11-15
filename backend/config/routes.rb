@@ -46,9 +46,11 @@ Rails.application.routes.draw do
     collection do
       post "authenticate", to: "register_devices#authenticate_device"
       get "hello_world", to: "register_devices#hello_world" # Route for hello_world action
+      get "device_info", to: "register_devices#device_info" # Route for hello_world action
     end
   end
 
   post "/devices/update_data", to: "devices#update_data"
   post "/devices/data", to: "devices#create_data"
+  get "/devices/:device_id/data", to: "devices#get_device_data"
 end
