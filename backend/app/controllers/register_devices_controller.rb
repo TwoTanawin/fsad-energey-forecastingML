@@ -1,10 +1,7 @@
-# app/controllers/register_devices_controller.rb
 class RegisterDevicesController < ApplicationController
-  # Endpoint for a device to register and request a token
+  # Skip authorization only for non-authenticated actions
   skip_before_action :authorize_request, only: [ :hello_world, :device_info ]
-  # before_action :authorize_request
   before_action :authenticate_device_by_token, only: [ :hello_world, :device_info ]
-
 
   def create
     if @current_user
@@ -34,6 +31,21 @@ class RegisterDevicesController < ApplicationController
     }, status: :ok
   end
 
+  def list_user_devices
+    # No need to decode token manually; `authorize_request` handles this
+    if @current_user.nil?
+      render json: { error: "Unauthorized access. User not authenticated." }, status: :unauthorized
+      return
+    end
+
+    devices = @current_user.register_devices
+
+    if devices.any?
+      render json: { devices: devices }, status: :ok
+    else
+      render json: { error: "No devices found for this user" }, status: :not_found
+    end
+  end
 
   # Endpoint to verify the device token
   def authenticate_device
@@ -56,8 +68,6 @@ class RegisterDevicesController < ApplicationController
       }
     }, status: :ok
   end
-
-  private
 
   private
 
