@@ -30,5 +30,5 @@ export class DeviceService {
     return this.http.get(`${this.BASE_URL}/register_devices/list_user_devices`, { headers: this.getAuthHeaders() });
   }
 
-  
+
 }
