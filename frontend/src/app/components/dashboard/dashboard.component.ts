@@ -9,6 +9,8 @@ import { DeviceService } from '../../services/device.service';
 })
 export class DashboardComponent implements OnInit {
 
+  devices: any[] = [];
+
   constructor(private deviceService: DeviceService, private router: Router) {}
 
   ngOnInit(): void {
@@ -18,18 +20,13 @@ export class DashboardComponent implements OnInit {
   checkUserDevices(): void {
     this.deviceService.getUserDevices().subscribe({
       next: (response) => {
-        const devices = response.devices || [];
-        if (devices.length === 0) {
-          // No devices registered, redirect to the device registration page
+        this.devices = response.devices || [];
+        if (this.devices.length === 0) {
           this.router.navigate(['/devices-register']);
-        } else {
-          alert(`You have ${devices.length} registered device(s).`);
         }
       },
       error: (error) => {
         if (error.status === 404) {
-          console.warn('No devices found for this user.');
-          // Redirect to the device registration page
           this.router.navigate(['/devices-register']);
         } else {
           console.error('Error checking user devices:', error);
@@ -37,6 +34,10 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
+  }
+
+  viewDeviceDetail(deviceId: string): void {
+    this.router.navigate([`/dashboard/${deviceId}`]);
   }
   
 }

@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       get "list_user_devices", to: "register_devices#list_user_devices"
     end
   end
+  get "/register_devices/:id/token", to: "register_devices#get_token_by_id"
 
   post "/devices/update_data", to: "devices#update_data"
   post "/devices/data", to: "devices#create_data"

@@ -8,10 +8,12 @@ import { DevicesRegisterComponent } from './components/devices-register/devices-
 import { ProfileComponent } from './components/profile/profile.component';
 import { PostComponent } from './components/post/post.component';
 import { SavedPostsComponent } from './components/saved-posts/saved-posts.component';
+import { DashboardDetailComponent } from './components/dashboard-detail/dashboard-detail.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
+  { path: 'dashboard/:device_id', component: DashboardDetailComponent },
   {path: 'dashboard', component: DashboardComponent},
   {path: 'map', component: MapComponent},
   {path: 'devices-register', component: DevicesRegisterComponent},

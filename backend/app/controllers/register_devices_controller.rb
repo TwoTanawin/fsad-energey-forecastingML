@@ -58,6 +58,15 @@ class RegisterDevicesController < ApplicationController
     end
   end
 
+  def get_token_by_id
+    register_device = RegisterDevice.find_by(id: params[:id])
+    if register_device
+      render json: { token: register_device.token }, status: :ok
+    else
+      render json: { error: "Register device not found" }, status: :not_found
+    end
+  end
+
   def hello_world
     render json: {
       message: "Hello World device",
@@ -68,6 +77,8 @@ class RegisterDevicesController < ApplicationController
       }
     }, status: :ok
   end
+
+
 
   private
 

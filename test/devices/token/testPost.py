@@ -4,7 +4,7 @@ import requests
 BASE_URL = "http://localhost:3000"
 
 # Device token
-DEVICE_TOKEN = "86a4e145aac7533c8f297c5cd236f2d5"
+DEVICE_TOKEN = "ecb5521a3bb0d9ac0631c9d13cb00441"
 
 # Device data to be sent
 device_data = {

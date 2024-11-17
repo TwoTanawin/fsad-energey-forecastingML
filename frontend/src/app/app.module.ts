@@ -25,6 +25,7 @@ import { CreateProfileComponent } from './components/create-profile/create-profi
 import { PostComponent } from './components/post/post.component';
 import { PostInteractionComponent } from './components/post-interaction/post-interaction.component';
 import { SavedPostsComponent } from './components/saved-posts/saved-posts.component';
+import { DashboardDetailComponent } from './components/dashboard-detail/dashboard-detail.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SavedPostsComponent } from './components/saved-posts/saved-posts.compon
     PostComponent,
     PostInteractionComponent,
     SavedPostsComponent,
+    DashboardDetailComponent,
   ],
   imports: [
     BrowserModule,
