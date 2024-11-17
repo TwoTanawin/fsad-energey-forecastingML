@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     end
   end
   get "/register_devices/:id/token", to: "register_devices#get_token_by_id"
+  patch "/register_devices/:id/update_address", to: "register_devices#update"
 
   post "/devices/update_data", to: "devices#update_data"
   post "/devices/data", to: "devices#create_data"

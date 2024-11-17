@@ -1,7 +1,7 @@
 class RegisterDevicesController < ApplicationController
   # Skip authorization only for non-authenticated actions
-  skip_before_action :authorize_request, only: [ :hello_world, :device_info ]
-  before_action :authenticate_device_by_token, only: [ :hello_world, :device_info ]
+  skip_before_action :authorize_request, only: [ :hello_world, :device_info, :update ]
+  before_action :authenticate_device_by_token, only: [ :hello_world, :device_info, :update  ]
 
   def create
     if @current_user
@@ -20,6 +20,28 @@ class RegisterDevicesController < ApplicationController
       render json: { error: "Invalid user credentials" }, status: :unauthorized
     end
   end
+
+  def update
+    # Ensure @device is authenticated by token
+    if @device.nil?
+      render json: { error: "Unauthorized or invalid device" }, status: :unauthorized
+      return
+    end
+
+    # Check that the ID in the route matches the authenticated device
+    if @device.id != params[:id].to_i
+      render json: { error: "Device ID mismatch" }, status: :unauthorized
+      return
+    end
+
+    # Update the device address
+    if @device.update(address: params[:address])
+      render json: { message: "Device address updated successfully", device: @device }, status: :ok
+    else
+      render json: { error: "Failed to update device address" }, status: :unprocessable_entity
+    end
+  end
+
 
   def device_info
     render json: {
