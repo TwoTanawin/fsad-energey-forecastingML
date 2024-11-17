@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 })
 export class GeocodingService {
 
-  private apiKey = 'AIzaSyAlZirsHcClezuf5DwUwpexqiR1mhPvaXE'; // Replace with your API key
+  private apiKey = ''; // Replace with your API key
 
   constructor(private http: HttpClient) { }
 
