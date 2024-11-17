@@ -2,10 +2,10 @@ import requests
 
 BASE_URL = "http://localhost:3000"
 user_credentials = {
-    "email": "jojo@jojo.com",  # Replace with a valid email
-    "password": "securepassword"  # Replace with the correct password
+    "email": "tester@tester.com",  # Replace with a valid email
+    "password": "11111111"  # Replace with the correct password
 }
-device_token = "cffecc99549feaf78d04fa738f3c1a07"  # Replace with a valid device token
+device_token = "86a4e145aac7533c8f297c5cd236f2d5"  # Replace with a valid device token
 
 # Step 1: User login to get the user token
 def user_login():

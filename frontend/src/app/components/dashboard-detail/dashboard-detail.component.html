@@ -5,20 +5,12 @@
       Back to Dashboard
     </button>
   
-    <div *ngIf="device" class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-bold mb-4">{{ device.name || 'Device Name Not Available' }}</h2>
-      <p class="text-gray-700 mb-2"><strong>Device ID:</strong> {{ device.device_id }}</p>
-      <p class="text-gray-700 mb-2"><strong>Active:</strong> {{ device.isActive ? 'Yes' : 'No' }}</p>
-      <p class="text-gray-700 mb-2"><strong>Voltage:</strong> {{ device.voltage }} V</p>
-      <p class="text-gray-700 mb-2"><strong>Power:</strong> {{ device.power }} W</p>
-      <p class="text-gray-700 mb-2"><strong>Current:</strong> {{ device.current }} A</p>
-      <p class="text-gray-700 mb-2"><strong>Energy:</strong> {{ device.energy }} kWh</p>
-      <p class="text-gray-700 mb-2"><strong>Frequency:</strong> {{ device.frequency }} Hz</p>
-      <p class="text-gray-700 mb-2"><strong>Power Factor (PF):</strong> {{ device.PF }}</p>
-      <p class="text-gray-700"><strong>Electric Price:</strong> ${{ device.electricPrice }}</p>
+    <div *ngIf="deviceData.length > 0" class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-bold mb-4">Device Metrics by ID</h2>
+      <canvas id="deviceDataChart"></canvas> <!-- Chart.js container -->
     </div>
   
-    <div *ngIf="!device" class="text-gray-500">
+    <div *ngIf="deviceData.length === 0" class="text-gray-500">
       <p>No device data available.</p>
     </div>
   </div>

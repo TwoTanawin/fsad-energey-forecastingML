@@ -15,7 +15,7 @@ export class DeviceService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log("token :",token)
+    console.log("token :", token)
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export class DeviceService {
     return this.http.post(`${this.BASE_URL}/register_devices`, deviceData, { headers: this.getAuthHeaders() });
   }
 
-  getUserDevices(): Observable<any>{
+  getUserDevices(): Observable<any> {
     return this.http.get(`${this.BASE_URL}/register_devices/list_user_devices`, { headers: this.getAuthHeaders() });
   }
 
@@ -41,23 +41,24 @@ export class DeviceService {
   //   return this.http.get(`${this.BASE_URL}/devices/${deviceId}/data`, { headers });
   // }
 
-    // Existing method to fetch device details
-    getDeviceById(deviceId: string, token: string): Observable<any> {
-      // const token = localStorage.getItem('authToken'); // Retrieve token dynamically
-      const headers = { Authorization: `Bearer ${token}` };
-      return this.http.get(`${this.BASE_URL}/devices/${deviceId}/data`, { headers });
-    }
-  
-    // New method to fetch token by device ID
-    getTokenByDeviceId(deviceId: string): Observable<any> {
-      const token = localStorage.getItem('authToken'); // Retrieve token dynamically
-      const headers = { Authorization: `Bearer ${token}` };
-      return this.http.get(`${this.BASE_URL}/register_devices/${deviceId}/token`, { headers });
-    }
-  
+  // Existing method to fetch device details
+  getDeviceById(deviceId: string, token: string): Observable<any> {
+    // const token = localStorage.getItem('authToken'); // Retrieve token dynamically
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.get(`${this.BASE_URL}/devices/${deviceId}/data`, { headers });
+  }
 
-  getDeviceData(deviceId: string,): Observable<any> {
-    return this.http.get(`${this.BASE_URL}/devices/${deviceId}/data`, { headers: this.getAuthHeaders()});
+  // New method to fetch token by device ID
+  getTokenByDeviceId(deviceId: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Retrieve token dynamically
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.get(`${this.BASE_URL}/register_devices/${deviceId}/token`, { headers });
+  }
+
+
+  getDeviceData(deviceId: string, token: string): Observable<any> {
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.get(`${this.BASE_URL}/devices/${deviceId}/data`, { headers });
   }
 
   getDeviceId(): Observable<any> {
