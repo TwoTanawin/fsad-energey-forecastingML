@@ -13,7 +13,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) { }
 
   // Store token in localStorage for persistent access
   private getAuthHeaders(): HttpHeaders {
@@ -70,9 +70,24 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-    // Sign-out method
-    signOut(): void {
-      localStorage.removeItem('token'); // Clear token from storage
-      this.router.navigate(['/login']); // Redirect to login page
+  // Sign-out method
+  signOut(): void {
+    localStorage.removeItem('token'); // Clear token from storage
+    this.router.navigate(['/login']); // Redirect to login page
+  }
+
+    // Check if the user is logged in
+    isLogined(): boolean {
+      const token = this.getToken();
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const isTokenExpired = payload.exp && Date.now() >= payload.exp * 1000;
+          return !isTokenExpired;
+        } catch (e) {
+          return false; // Invalid token format
+        }
+      }
+      return false; // No token found
     }
 }

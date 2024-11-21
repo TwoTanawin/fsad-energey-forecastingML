@@ -9,18 +9,19 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { PostComponent } from './components/post/post.component';
 import { SavedPostsComponent } from './components/saved-posts/saved-posts.component';
 import { DashboardDetailComponent } from './components/dashboard-detail/dashboard-detail.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
-  { path: 'dashboard/:device_id', component: DashboardDetailComponent },
-  {path: 'dashboard', component: DashboardComponent},
-  {path: 'map', component: MapComponent},
-  {path: 'devices-register', component: DevicesRegisterComponent},
-  {path: 'user-profile', component: ProfileComponent},
-  {path: 'post', component: PostComponent},
-  {path: 'saved-post', component: SavedPostsComponent},
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, 
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'dashboard/:device_id', component: DashboardDetailComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'map', component: MapComponent, canActivate: [AuthGuard] },
+  { path: 'devices-register', component: DevicesRegisterComponent, canActivate: [AuthGuard] },
+  { path: 'user-profile', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'post', component: PostComponent, canActivate: [AuthGuard] },
+  { path: 'saved-post', component: SavedPostsComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: '/login', pathMatch: 'full' },
 ];
 
 @NgModule({
