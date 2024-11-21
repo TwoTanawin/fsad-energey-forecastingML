@@ -73,14 +73,36 @@ export class DashboardDetailComponent implements OnInit {
       return;
     }
   
-    // Use indices as labels
-    const indices = this.deviceData.map((_, index) => index + 1); // Generate 1-based indices
-    const voltages = this.deviceData.map((data) => data.voltage);
-    const powers = this.deviceData.map((data) => data.power);
-    const currents = this.deviceData.map((data) => data.current);
+    const maxPoints = 10; // Maximum number of points to display
+    let indices = this.deviceData.map((_, index) => index + 1); // Generate 1-based indices
+    let voltages = this.deviceData.map((data) => data.voltage);
+    let powers = this.deviceData.map((data) => data.power);
+    let currents = this.deviceData.map((data) => data.current);
+  
+    if (indices.length > maxPoints) {
+      indices = indices.slice(indices.length - maxPoints); // Keep only the last `maxPoints`
+      voltages = voltages.slice(voltages.length - maxPoints);
+      powers = powers.slice(powers.length - maxPoints);
+      currents = currents.slice(currents.length - maxPoints);
+    }
+  
+    // Helper function to calculate dynamic Y-axis range
+    const calculateYAxisRange = (data: number[]) => {
+      const min = Math.min(...data);
+      const max = Math.max(...data);
+      const buffer = (max - min) * 0.1; // Add 10% buffer to the range
+      return {
+        min: Math.floor(min - buffer),
+        max: Math.ceil(max + buffer),
+      };
+    };
+  
+    const voltageRange = calculateYAxisRange(voltages);
+    const powerRange = calculateYAxisRange(powers);
+    const currentRange = calculateYAxisRange(currents);
   
     // Voltage Chart
-    new Chart(voltageCtx, {
+    this.chart = new Chart(voltageCtx, {
       type: 'line',
       data: {
         labels: indices,
@@ -101,8 +123,18 @@ export class DashboardDetailComponent implements OnInit {
           title: { display: true, text: 'Voltage Over Index' },
         },
         scales: {
-          x: { title: { display: true, text: 'Index' } },
-          y: { title: { display: true, text: 'Voltage (V)' }, beginAtZero: true },
+          x: {
+            title: { display: true, text: 'Index' },
+          },
+          y: {
+            title: { display: true, text: 'Voltage (V)' },
+            ticks: {
+              callback: (value) => `${value} V`, // Format Y-axis values
+              stepSize: 5, // Optional: Adjust step size for better readability
+            },
+            min: voltageRange.min,
+            max: voltageRange.max,
+          },
         },
       },
     });
@@ -129,8 +161,17 @@ export class DashboardDetailComponent implements OnInit {
           title: { display: true, text: 'Power Over Index' },
         },
         scales: {
-          x: { title: { display: true, text: 'Index' } },
-          y: { title: { display: true, text: 'Power (W)' }, beginAtZero: true },
+          x: {
+            title: { display: true, text: 'Index' },
+          },
+          y: {
+            title: { display: true, text: 'Power (W)' },
+            ticks: {
+              callback: (value) => `${value} W`,
+            },
+            min: powerRange.min,
+            max: powerRange.max,
+          },
         },
       },
     });
@@ -157,12 +198,23 @@ export class DashboardDetailComponent implements OnInit {
           title: { display: true, text: 'Current Over Index' },
         },
         scales: {
-          x: { title: { display: true, text: 'Index' } },
-          y: { title: { display: true, text: 'Current (A)' }, beginAtZero: true },
+          x: {
+            title: { display: true, text: 'Index' },
+          },
+          y: {
+            title: { display: true, text: 'Current (A)' },
+            ticks: {
+              callback: (value) => `${value} A`,
+            },
+            min: currentRange.min,
+            max: currentRange.max,
+          },
         },
       },
     });
   }
+  
+  
   
   
   getAverageValue(key: string): number {
