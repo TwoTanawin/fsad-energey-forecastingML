@@ -59,26 +59,31 @@ export class DashboardDetailComponent implements OnInit {
   }
 
   initializeChart(): void {
-    const ctx = document.getElementById('deviceDataChart') as HTMLCanvasElement;
-    if (!ctx) {
-      console.error('Chart canvas element not found.');
-      return;
-    }
-
+    // Destroy existing charts if they exist
     if (this.chart) {
       this.chart.destroy();
     }
-
-    const timestamps = this.deviceData.map((data) =>
-      new Date(data.created_at).toLocaleString()
-    );
+  
+    const voltageCtx = document.getElementById('voltageChart') as HTMLCanvasElement;
+    const powerCtx = document.getElementById('powerChart') as HTMLCanvasElement;
+    const currentCtx = document.getElementById('currentChart') as HTMLCanvasElement;
+  
+    if (!voltageCtx || !powerCtx || !currentCtx) {
+      console.error('One or more chart canvas elements are not found.');
+      return;
+    }
+  
+    // Use indices as labels
+    const indices = this.deviceData.map((_, index) => index + 1); // Generate 1-based indices
     const voltages = this.deviceData.map((data) => data.voltage);
     const powers = this.deviceData.map((data) => data.power);
-
-    this.chart = new Chart(ctx, {
+    const currents = this.deviceData.map((data) => data.current);
+  
+    // Voltage Chart
+    new Chart(voltageCtx, {
       type: 'line',
       data: {
-        labels: timestamps,
+        labels: indices,
         datasets: [
           {
             label: 'Voltage (V)',
@@ -87,6 +92,27 @@ export class DashboardDetailComponent implements OnInit {
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             fill: false,
           },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true },
+          title: { display: true, text: 'Voltage Over Index' },
+        },
+        scales: {
+          x: { title: { display: true, text: 'Index' } },
+          y: { title: { display: true, text: 'Voltage (V)' }, beginAtZero: true },
+        },
+      },
+    });
+  
+    // Power Chart
+    new Chart(powerCtx, {
+      type: 'line',
+      data: {
+        labels: indices,
+        datasets: [
           {
             label: 'Power (W)',
             data: powers,
@@ -99,14 +125,50 @@ export class DashboardDetailComponent implements OnInit {
       options: {
         responsive: true,
         plugins: {
-          legend: { display: true, position: 'top' },
-          title: { display: true, text: 'Device Metrics Over Time' },
+          legend: { display: true },
+          title: { display: true, text: 'Power Over Index' },
         },
         scales: {
-          x: { type: 'category', title: { display: true, text: 'Timestamp' } },
-          y: { title: { display: true, text: 'Values' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Index' } },
+          y: { title: { display: true, text: 'Power (W)' }, beginAtZero: true },
+        },
+      },
+    });
+  
+    // Current Chart
+    new Chart(currentCtx, {
+      type: 'line',
+      data: {
+        labels: indices,
+        datasets: [
+          {
+            label: 'Current (A)',
+            data: currents,
+            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true },
+          title: { display: true, text: 'Current Over Index' },
+        },
+        scales: {
+          x: { title: { display: true, text: 'Index' } },
+          y: { title: { display: true, text: 'Current (A)' }, beginAtZero: true },
         },
       },
     });
   }
+  
+  
+  getAverageValue(key: string): number {
+    if (!this.deviceData.length) return 0;
+    const total = this.deviceData.reduce((sum, data) => sum + (data[key] || 0), 0);
+    return parseFloat((total / this.deviceData.length).toFixed(2));
+  }
+  
 }
