@@ -56,4 +56,6 @@ Rails.application.routes.draw do
   post "/devices/update_data", to: "devices#update_data"
   post "/devices/data", to: "devices#create_data"
   get "/devices/:device_id/data", to: "devices#get_device_data"
+
+  get "/devices/all", to: "devices#get_all_devices_data"
 end

@@ -2,16 +2,17 @@
   [center]="center"
   [zoom]="zoom"
   height="500px"
-  width="100%">
+  width="100%"
+>
+  <!-- Render markers for all devices -->
   <map-marker
-    *ngIf="markerPosition"
-    [position]="markerPosition"
-    [label]="'📍'"
-    [title]="'1518 Pracharat 1 Road'"
-    [icon]="{
-      url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-    }"
-    (mapClick)="onMarkerClick()">
+    *ngFor="let device of devices"
+    [position]="device.position"
+    [label]="device.label"
+    [icon]="device.icon"
+    [title]="device.title"
+    (mapClick)="onMarkerClick(device)"
+  >
   </map-marker>
 </google-map>
 
@@ -20,8 +21,11 @@
   *ngIf="showInfoWindow"
   class="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-4 w-80 z-50 text-center"
 >
-  <h3 class="text-lg font-semibold mb-2">Address Details</h3>
-  <p class="text-sm text-gray-600 mb-4">{{ markerAddress }}</p>
+  <h3 class="text-lg font-semibold mb-2">Device Data</h3>
+  <p><strong>Address:</strong> {{ infoWindowData?.address }}</p>
+  <p><strong>Average Voltage:</strong> {{ infoWindowData?.avg_voltage }}</p>
+  <p><strong>Average Power:</strong> {{ infoWindowData?.avg_power }}</p>
+  <p><strong>Average Current:</strong> {{ infoWindowData?.avg_current }}</p>
   <button
     (click)="closeInfoWindow()"
     class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"

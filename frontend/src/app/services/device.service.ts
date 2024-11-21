@@ -64,4 +64,8 @@ export class DeviceService {
   getDeviceId(): Observable<any> {
     return this.http.get(`${this.BASE_URL}/register_devices/device_info`, { headers: this.getAuthHeaders() });
   }
+
+  getAllDevicesData(): Observable<any> {
+    return this.http.get(`${this.BASE_URL}/devices/all`, { headers: this.getAuthHeaders() });
+  }
 }

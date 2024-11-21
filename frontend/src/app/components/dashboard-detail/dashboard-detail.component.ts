@@ -30,6 +30,7 @@ export class DashboardDetailComponent implements OnInit {
   logDeviceTokenAndFetchDetails(deviceId: string): void {
     this.deviceService.getTokenByDeviceId(deviceId).subscribe({
       next: (response) => {
+        console.log("Token Response:", response);
         if (response && response.token) {
           this.fetchDeviceDetails(deviceId, response.token);
         } else {
@@ -41,12 +42,14 @@ export class DashboardDetailComponent implements OnInit {
       },
     });
   }
-
+  
   fetchDeviceDetails(deviceId: string, token: string): void {
     this.deviceService.getDeviceData(deviceId, token).subscribe({
       next: (response) => {
+        console.log("Device Data Response:", response);
         if (response && response.data) {
           this.deviceData = response.data;
+          console.log("Device Data Array:", JSON.stringify(this.deviceData, null, 2));
           setTimeout(() => this.initializeChart(), 0);
         } else {
           this.deviceData = [];
@@ -57,6 +60,8 @@ export class DashboardDetailComponent implements OnInit {
       },
     });
   }
+  
+  
 
   initializeChart(): void {
     // Destroy existing charts if they exist
@@ -214,9 +219,7 @@ export class DashboardDetailComponent implements OnInit {
     });
   }
   
-  
-  
-  
+
   getAverageValue(key: string): number {
     if (!this.deviceData.length) return 0;
     const total = this.deviceData.reduce((sum, data) => sum + (data[key] || 0), 0);

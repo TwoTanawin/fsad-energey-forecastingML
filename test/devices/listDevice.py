@@ -8,7 +8,7 @@ def user_login():
     print("Logging in user...")
     login_data = {
         "email": "jojo@jojo.com",  # Replace with a valid email
-        "password": "securepassword"  # Replace with the correct password
+        "password": "1111111"  # Replace with the correct password
     }
     response = requests.post(f"{BASE_URL}/login", json=login_data)
     print("Login Response:", response.status_code, response.json())

@@ -1,5 +1,5 @@
 class DevicesController < ApplicationController
-  skip_before_action :authorize_request, only: [ :update_data, :create_data, :get_device_data ]
+  skip_before_action :authorize_request, only: [ :update_data, :create_data, :get_device_data, :get_all_devices_data ]
   before_action :validate_device_token, only: [ :update_data, :create_data, :get_device_data ]
 
   # Retrieve all data for a specific device
@@ -14,6 +14,39 @@ class DevicesController < ApplicationController
       }, status: :ok
     else
       render json: { error: "No data found for this device" }, status: :not_found
+    end
+  end
+
+  def get_all_devices_data
+    all_devices_data = Device.includes(:register_device).all
+
+    if all_devices_data.any?
+      # Calculate averages for each device using Active Record
+      formatted_data = all_devices_data.map do |device|
+        {
+          id: device.id,
+          isActive: device.isActive,
+          avg_voltage: Device.where(id: device.id).average(:voltage)&.to_f&.round(3),
+          avg_power: Device.where(id: device.id).average(:power)&.to_f&.round(3),
+          avg_current: Device.where(id: device.id).average(:current)&.to_f&.round(3),
+          avg_energy: Device.where(id: device.id).average(:energy)&.to_f&.round(3),
+          avg_frequency: Device.where(id: device.id).average(:frequency)&.to_f&.round(3),
+          avg_power_factor: Device.where(id: device.id).average(:PF)&.to_f&.round(3), # Ensure PF is case-sensitive
+          avg_electric_price: Device.where(id: device.id).average(:electricPrice)&.to_f&.round(3),
+          register_device_details: {
+            id: device.register_device&.id,
+            address: device.register_device&.address,
+            created_at: device.register_device&.created_at
+          }
+        }
+      end
+
+      render json: {
+        message: "All devices average data retrieved successfully",
+        devices: formatted_data
+      }, status: :ok
+    else
+      render json: { error: "No devices found" }, status: :not_found
     end
   end
 
