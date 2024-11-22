@@ -1,9 +1,7 @@
-<google-map
-  [center]="center"
-  [zoom]="zoom"
-  height="500px"
-  width="100%"
->
+<div class="flex justify-center items-center">
+  <h2 class="text-center text-2xl">Real-Time Energy Consumption in Bangkok</h2>
+</div>
+<google-map [center]="center" [zoom]="zoom" height="500px" width="100%">
   <!-- Render markers for all devices -->
   <map-marker
     *ngFor="let device of devices"

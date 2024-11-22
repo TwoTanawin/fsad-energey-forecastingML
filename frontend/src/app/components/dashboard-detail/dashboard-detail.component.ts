@@ -11,6 +11,7 @@ import { Chart, registerables } from 'chart.js';
 export class DashboardDetailComponent implements OnInit {
   deviceData: any[] = []; // Metrics from the device
   chart: any; // Reference to the Chart.js instance
+  forecastedValue: number = 0; // Dummy forecasted value with noise
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +50,7 @@ export class DashboardDetailComponent implements OnInit {
         console.log("Device Data Response:", response);
         if (response && response.data) {
           this.deviceData = response.data;
+          this.calculateForecastedValue();
           console.log("Device Data Array:", JSON.stringify(this.deviceData, null, 2));
           setTimeout(() => this.initializeChart(), 0);
         } else {
@@ -61,7 +63,15 @@ export class DashboardDetailComponent implements OnInit {
     });
   }
   
-  
+  calculateForecastedValue(): void {
+    if (!this.deviceData.length) {
+      this.forecastedValue = 0;
+      return;
+    }
+    const basePrediction = this.getAverageValue('electricPrice') * 1.1; // Base prediction logic
+    const noise = (Math.random() - 0.5) * 0.2 * basePrediction; // Add random noise
+    this.forecastedValue = parseFloat((basePrediction + noise).toFixed(2));
+  }
 
   initializeChart(): void {
     // Destroy existing charts if they exist
@@ -91,7 +101,6 @@ export class DashboardDetailComponent implements OnInit {
       currents = currents.slice(currents.length - maxPoints);
     }
   
-    // Helper function to calculate dynamic Y-axis range
     const calculateYAxisRange = (data: number[]) => {
       const min = Math.min(...data);
       const max = Math.max(...data);
@@ -106,8 +115,7 @@ export class DashboardDetailComponent implements OnInit {
     const powerRange = calculateYAxisRange(powers);
     const currentRange = calculateYAxisRange(currents);
   
-    // Voltage Chart
-    this.chart = new Chart(voltageCtx, {
+    new Chart(voltageCtx, {
       type: 'line',
       data: {
         labels: indices,
@@ -128,15 +136,9 @@ export class DashboardDetailComponent implements OnInit {
           title: { display: true, text: 'Voltage Over Index' },
         },
         scales: {
-          x: {
-            title: { display: true, text: 'Index' },
-          },
+          x: { title: { display: true, text: 'Index' } },
           y: {
             title: { display: true, text: 'Voltage (V)' },
-            ticks: {
-              callback: (value) => `${value} V`, // Format Y-axis values
-              stepSize: 5, // Optional: Adjust step size for better readability
-            },
             min: voltageRange.min,
             max: voltageRange.max,
           },
@@ -144,7 +146,6 @@ export class DashboardDetailComponent implements OnInit {
       },
     });
   
-    // Power Chart
     new Chart(powerCtx, {
       type: 'line',
       data: {
@@ -166,14 +167,9 @@ export class DashboardDetailComponent implements OnInit {
           title: { display: true, text: 'Power Over Index' },
         },
         scales: {
-          x: {
-            title: { display: true, text: 'Index' },
-          },
+          x: { title: { display: true, text: 'Index' } },
           y: {
             title: { display: true, text: 'Power (W)' },
-            ticks: {
-              callback: (value) => `${value} W`,
-            },
             min: powerRange.min,
             max: powerRange.max,
           },
@@ -181,7 +177,6 @@ export class DashboardDetailComponent implements OnInit {
       },
     });
   
-    // Current Chart
     new Chart(currentCtx, {
       type: 'line',
       data: {
@@ -203,14 +198,9 @@ export class DashboardDetailComponent implements OnInit {
           title: { display: true, text: 'Current Over Index' },
         },
         scales: {
-          x: {
-            title: { display: true, text: 'Index' },
-          },
+          x: { title: { display: true, text: 'Index' } },
           y: {
             title: { display: true, text: 'Current (A)' },
-            ticks: {
-              callback: (value) => `${value} A`,
-            },
             min: currentRange.min,
             max: currentRange.max,
           },
@@ -218,12 +208,10 @@ export class DashboardDetailComponent implements OnInit {
       },
     });
   }
-  
 
   getAverageValue(key: string): number {
     if (!this.deviceData.length) return 0;
     const total = this.deviceData.reduce((sum, data) => sum + (data[key] || 0), 0);
     return parseFloat((total / this.deviceData.length).toFixed(2));
   }
-  
 }
