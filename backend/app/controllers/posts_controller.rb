@@ -31,7 +31,11 @@ end
   def update
     # Check if the current user is the owner of the post
     if @post.user_id == @current_user.id
-      if @post.update(post_params)
+      # Retain the current image if no new image is provided
+      updated_params = post_params
+      updated_params[:image] = @post.image if updated_params[:image].nil?
+
+      if @post.update(updated_params)
         render json: @post
       else
         render json: @post.errors, status: :unprocessable_entity
@@ -40,6 +44,7 @@ end
       render json: { error: "Unauthorized" }, status: :unauthorized
     end
   end
+
 
   # DELETE /posts/:id
   def destroy

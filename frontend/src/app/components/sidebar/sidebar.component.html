@@ -1,116 +1,179 @@
 <div class="flex flex-col w-64 bg-white h-screen shadow-md">
-    <!-- Logo -->
-    <div class="flex items-center h-16 px-4 bg-white shadow">
-      <img
-        class="h-16 px-16 w-auto"
-        src="../../../assets/images/lightning-logo.webp"
-        alt="Logo"
+  <!-- Logo -->
+  <div class="flex items-center h-16 px-4 bg-white shadow">
+    <img
+      class="h-16 px-16 w-auto"
+      src="../../../assets/images/lightning-logo.webp"
+      alt="Logo"
+    />
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-2 py-4 space-y-1 bg-white">
+    <a
+    *ngFor="let item of navigation"
+    [routerLink]="item.href"
+    [ngClass]="
+      classNames(
+        item.current
+          ? 'bg-indigo-50 text-indigo-600'
+          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+        'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+      )
+    "
+  >
+    <!-- Icon for Home -->
+    <svg
+      *ngIf="item.icon === 'home'"
+      xmlns="http://www.w3.org/2000/svg"
+      class="mr-3 h-6 w-6 text-indigo-500 group-hover:text-indigo-600"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M10 3.293l6 6V18a1 1 0 01-1 1h-4v-4H9v4H5a1 1 0 01-1-1V9.293l6-6zM5 10v7h2v-3a1 1 0 011-1h4a1 1 0 011 1v3h2v-7l-5-5-5 5z"
+        clip-rule="evenodd"
       />
-    </div>
+    </svg>
   
-    <!-- Navigation -->
-    <nav class="flex-1 px-2 py-4 space-y-1 bg-white">
-      <a
-        *ngFor="let item of navigation"
-        [routerLink]="item.href"
-        [ngClass]="classNames(
-          item.current ? 'bg-indigo-50 text-indigo-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-          'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
-        )"
+    <!-- Icon for Dashboard -->
+    <svg
+      *ngIf="item.icon === 'dashboard'"
+      xmlns="http://www.w3.org/2000/svg"
+      class="mr-3 h-6 w-6 text-indigo-500 group-hover:text-indigo-600"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path d="M3 3a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3z" />
+    </svg>
+  
+    <!-- Icon for Community -->
+    <svg
+      *ngIf="item.icon === 'community'"
+      xmlns="http://www.w3.org/2000/svg"
+      class="mr-3 h-6 w-6 text-indigo-500 group-hover:text-indigo-600"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        d="M10 3a7 7 0 100 14 7 7 0 000-14zM2 10a8 8 0 1116 0 8 8 0 01-16 0zm8-4a4 4 0 110 8 4 4 0 010-8z"
+      />
+    </svg>
+  
+    <!-- Icon for Saved Posts -->
+    <svg
+      *ngIf="item.icon === 'bookmark'"
+      xmlns="http://www.w3.org/2000/svg"
+      class="mr-3 h-6 w-6 text-indigo-500 group-hover:text-indigo-600"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        d="M5 3a2 2 0 00-2 2v14l7-5.5 7 5.5V5a2 2 0 00-2-2H5z"
+      />
+    </svg>
+  
+    <span>{{ item.name }}</span>
+  </a>
+  
+
+    <!-- Topics Section -->
+    <!-- <div class="mt-6">
+      <h3
+        class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
       >
-        <!-- Icon for Home -->
-        <svg
-          *ngIf="item.icon === 'home'"
-          xmlns="http://www.w3.org/2000/svg"
-          class="mr-3 h-6 w-6 text-indigo-500 group-hover:text-indigo-600"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+        Topics
+      </h3>
+      <div class="mt-1 space-y-1">
+        <div
+          *ngFor="let topic of topics; let i = index"
+          class="flex items-center justify-between"
         >
-          <path
-            fill-rule="evenodd"
-            d="M10 3.293l6 6V18a1 1 0 01-1 1h-4v-4H9v4H5a1 1 0 01-1-1V9.293l6-6zM5 10v7h2v-3a1 1 0 011-1h4a1 1 0 011 1v3h2v-7l-5-5-5 5z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <span>{{ item.name }}</span>
-
-        
-
-      </a>
-
-      
-  
-      <!-- Topics Section -->
-      <div class="mt-6">
-        <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          Topics
-        </h3>
-        <div class="mt-1 space-y-1">
-          <div *ngFor="let topic of topics; let i = index" class="flex items-center justify-between">
-            <a
-              [routerLink]="['/posts']"
-              class="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
+          <a
+            [routerLink]="['/posts']"
+            class="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
+          >
+            <span
+              class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center"
+              >{{ topic.initial }}</span
             >
-              <span
-                class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center"
-              >{{ topic.initial }}</span>
-              <span class="ml-3">{{ topic.name }}</span>
-            </a>
-            
-            <!-- Options button to show Edit/Delete -->
-            <button (click)="toggleOptions(i)" class="ml-2 text-gray-500 hover:text-gray-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 10h12M6 14h12M6 18h12" />
-              </svg>
+            <span class="ml-3">{{ topic.name }}</span>
+          </a>
+          <button
+            (click)="toggleOptions(i)"
+            class="ml-2 text-gray-500 hover:text-gray-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 10h12M6 14h12M6 18h12"
+              />
+            </svg>
+          </button>
+          <div *ngIf="showOptionsIndex === i" class="flex space-x-2 ml-2">
+            <button
+              (click)="enableEditTopic(i)"
+              class="text-blue-500 hover:underline"
+            >
+              Edit
             </button>
-  
-            <!-- Show options only when toggled -->
-            <div *ngIf="showOptionsIndex === i" class="flex space-x-2 ml-2">
-              <button (click)="enableEditTopic(i)" class="text-blue-500 hover:underline">Edit</button>
-              <button (click)="deleteTopic(i)" class="text-red-500 hover:underline">Delete</button>
-            </div>
+            <button
+              (click)="deleteTopic(i)"
+              class="text-red-500 hover:underline"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
-  
-      <!-- Add/Edit Topic Section -->
-      <div class="mt-4 px-3">
-        <input
-          *ngIf="!isEditing"  
-          type="text"
-          [(ngModel)]="newTopicName"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          placeholder="Add a topic"
-        />
-        <input
-          *ngIf="isEditing"  
-          type="text"
-          [(ngModel)]="editingTopicName"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          placeholder="Edit topic name"
-        />
+    </div> -->
+
+    <!-- Add/Edit Topic Section -->
+    <!-- <div class="mt-4 px-3">
+      <input
+        *ngIf="!isEditing"
+        type="text"
+        [(ngModel)]="newTopicName"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        placeholder="Add a topic"
+      />
+      <input
+        *ngIf="isEditing"
+        type="text"
+        [(ngModel)]="editingTopicName"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        placeholder="Edit topic name"
+      />
+      <button
+        *ngIf="!isEditing"
+        (click)="addTopic()"
+        class="mt-2 w-full bg-indigo-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-indigo-500 focus:outline-none"
+      >
+        Add Topic
+      </button>
+      <div *ngIf="isEditing" class="flex space-x-2 mt-2">
         <button
-          *ngIf="!isEditing"  
-          (click)="addTopic()"
-          class="mt-2 w-full bg-indigo-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-indigo-500 focus:outline-none"
+          (click)="saveEditTopic()"
+          class="w-full bg-green-500 text-white py-2 rounded-md text-sm font-semibold hover:bg-green-400"
         >
-          Add Topic
+          Save
         </button>
-        <div *ngIf="isEditing" class="flex space-x-2 mt-2"> <!-- Buttons for saving or canceling edit -->
-          <button
-            (click)="saveEditTopic()"
-            class="w-full bg-green-500 text-white py-2 rounded-md text-sm font-semibold hover:bg-green-400"
-          >
-            Save
-          </button>
-          <button
-            (click)="cancelEdit()"
-            class="w-full bg-gray-500 text-white py-2 rounded-md text-sm font-semibold hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-        </div>
+        <button
+          (click)="cancelEdit()"
+          class="w-full bg-gray-500 text-white py-2 rounded-md text-sm font-semibold hover:bg-gray-400"
+        >
+          Cancel
+        </button>
       </div>
-    </nav>
-  </div>
-  
+    </div> -->
+  </nav>
+</div>

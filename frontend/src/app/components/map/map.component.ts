@@ -49,6 +49,8 @@ export class MapComponent implements OnInit {
     this.deviceService.getAllDevicesData().subscribe({
       next: (data) => {
         const devices = data.devices || [];
+  
+        // Fetch geocoding results with caching
         const geocodePromises = devices.map((device: any) =>
           this.geocodingService.getLatLng(device.register_device_details.address).toPromise()
         );
@@ -78,6 +80,7 @@ export class MapComponent implements OnInit {
               },
             }));
   
+            // Center the map at the first device's position
             if (this.devices.length > 0) {
               this.center = this.devices[0].position;
             }
@@ -96,6 +99,7 @@ export class MapComponent implements OnInit {
       },
     });
   }
+  
   
 
   assignColorsForOverlappingPins(devices: Device[]): Map<string, string> {

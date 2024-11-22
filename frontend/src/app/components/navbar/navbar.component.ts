@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit {
             this.profileImage = this.decodeBase64Image(profileData.userImg);
           } else {
             // Use default image if no profile picture
-            this.profileImage = 'https://flowbite.com/application-ui/demo/images/users/jese-leos-2x.png';
+            this.profileImage = '/assets/images/brocode.png';
           }
         },
         error: (error) => {
