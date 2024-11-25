@@ -5,7 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: twotanawin/angular-energy-app-client:0.5 # Replace with your Docker Hub username
+    image: twotanawin/angular-energy-app:0.4 # Replace with your Docker Hub username
+    platform: linux/amd64
     ports:
-      - "8084:80" # Maps the container's port 80 to your local machine's port 8084
+      - "8087:80" # Maps the container's port 80 to your local machine's port 8084
     restart: always # Automatically restart the container if it crashes

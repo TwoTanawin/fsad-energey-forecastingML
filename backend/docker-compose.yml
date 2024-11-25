@@ -1,6 +1,6 @@
 services:
   backend_db:
-    image: postgres:latest
+    image: postgres:16
     container_name: backend_db
     environment:
       - POSTGRES_USER=admin
@@ -30,7 +30,8 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: backend_web
-    image: backend_web:0.1
+    image: twotanawin/rails_backend_energy_app:0.3
+    platform: linux/amd64
     command: bash -c "bundle exec rake db:create && bundle exec rake db:migrate && ./bin/rails server -b 0.0.0.0 -p 3000"
     ports:
       - "3000:3000"
@@ -40,6 +41,8 @@ services:
       - ./:/rails
     depends_on:
       - backend_db
+    environment:
+      - JWT_SECRET_KEY=ByYM000OLlMQG6VVVp1OH7Xzyr7gHuw1qvUC5dcGt3SNM
 
 volumes:
   pgadmin_data:

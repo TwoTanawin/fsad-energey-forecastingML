@@ -3,11 +3,11 @@ import base64
 import os
 import uuid
 
-BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
+BASE_URL = "http://18.143.77.96:3000"  # Replace with your actual base URL
 
 # Login data
 login_data = {
-    "email": "gogo@Gogo.com",
+    "email": "jojo@jojo.com",
     "password": "securepassword"
 }
 

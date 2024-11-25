@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  backend_db:
+    image: postgres:latest
+    container_name: backend_db
+    platform: linux/amd64
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=energy_app
+    ports:
+      - "5433:5432"
+    networks:
+      - energy_network
+
+  backend_pgadmin:
+    image: dpage/pgadmin4
+    container_name: backend_pgadmin
+    platform: linux/amd64
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend_db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - energy_network
+
+  backend_web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: backend_web
+    image: twotanawin/rails_backend_energy_app:0.2
+    platform: linux/amd64
+    command: bash -c "bundle exec rake db:prepare && ./bin/rails server -b 0.0.0.0 -p 3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/rails
+    depends_on:
+      - backend_db
+    restart: always
+    networks:
+      - energy_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: twotanawin/angular_frontend_energy_app:0.2
+    platform: linux/amd64
+    ports:
+      - "8086:80" # Maps container's port 80 to local port 8086
+    restart: always
+    networks:
+      - energy_network
+
+volumes:
+  pgadmin_data:
+
+networks:
+  energy_network:
+    driver: bridge

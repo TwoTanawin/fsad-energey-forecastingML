@@ -11,7 +11,8 @@ export class WebSocketService {
   connect(deviceId: string): Observable<any> {
     // Create a new WebSocket connection to the server with the device ID
     this.socket = new WebSocket(`ws://localhost:3000/cable?device_id=${deviceId}`);
-
+    // http://backend_web:3000
+    // http://18.143.77.96:3000
     // Handle messages received from the WebSocket
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);

@@ -22,11 +22,22 @@ export class RegisterComponent {
 
   // Handle form submission
   onSubmit() {
+    // Check if passwords match
     if (this.password !== this.confirmPassword) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'Passwords do not match!',
+      });
+      return;
+    }
+
+    // Check if password length is greater than 6 characters
+    if (this.password.length <= 6) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Password must be longer than 6 characters!',
       });
       return;
     }

@@ -3,7 +3,7 @@
     <!-- Logo -->
     <div class="flex justify-center">
       <img
-      src="../../../assets/images/lightning-logo.webp"
+        src="../../../assets/images/lightning-logo.webp"
         alt="Your Logo"
         class="h-20"
       />
@@ -19,23 +19,23 @@
       <!-- Username -->
       <div>
         <label for="firstName" class="block text-sm font-medium text-gray-700"
-          >firstName</label
+          >First Name</label
         >
         <input
           type="text"
-          id="username"
+          id="firstName"
           [(ngModel)]="firstName"
           name="firstName"
           class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Enter your firstName"
+          placeholder="Enter your first name"
           required
         />
       </div>
 
-      <!-- Username -->
+      <!-- Last Name -->
       <div>
         <label for="lastName" class="block text-sm font-medium text-gray-700"
-          >lastName</label
+          >Last Name</label
         >
         <input
           type="text"
@@ -43,7 +43,7 @@
           [(ngModel)]="lastName"
           name="lastName"
           class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Enter your lastName"
+          placeholder="Enter your last name"
           required
         />
       </div>
@@ -78,6 +78,8 @@
           placeholder="Enter your password"
           required
         />
+        <!-- Password Length Validation -->
+        <p *ngIf="password && password.length <= 6" class="text-red-500 text-xs mt-1">Password must be longer than 6 characters.</p>
       </div>
 
       <!-- Confirm Password -->
