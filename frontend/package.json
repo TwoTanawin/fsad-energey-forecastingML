@@ -23,6 +23,7 @@
     "@angular/router": "^17.3.0",
     "chart.js": "^4.4.6",
     "dotenv": "^16.4.5",
+    "html2canvas": "^1.4.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.14.5",
     "tslib": "^2.3.0",

@@ -71,11 +71,11 @@ export class PostComponent implements OnInit {
   }  
 
   createPost() {
-    if (this.newPostContent.trim().length > 100) {
+    if (this.newPostContent.trim().length > 200) {
       Swal.fire({
         icon: 'error',
         title: 'Content Too Long',
-        text: 'Post content cannot exceed 100 characters.',
+        text: 'Post content cannot exceed 200 characters.',
       });
       return;
     }

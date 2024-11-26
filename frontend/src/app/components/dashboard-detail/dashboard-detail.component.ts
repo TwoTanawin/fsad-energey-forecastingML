@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DeviceService } from '../../services/device.service';
 import { Chart, registerables } from 'chart.js';
+import { PostService } from '../../services/post.service';
+import html2canvas from 'html2canvas';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard-detail',
@@ -15,7 +18,8 @@ export class DashboardDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private postService: PostService,
   ) { }
 
   ngOnInit(): void {
@@ -72,6 +76,149 @@ export class DashboardDetailComponent implements OnInit {
     const noise = (Math.random() - 0.5) * 0.2 * basePrediction; // Add random noise
     this.forecastedValue = parseFloat((basePrediction + noise).toFixed(2));
   }
+
+  // captureAndPostDeviceDetails(): void {
+  //   if (!this.deviceData || this.deviceData.length === 0) {
+  //     console.error('No device data to capture.');
+  //     alert('No device data available to share.');
+  //     return;
+  //   }
+
+  //   const now = new Date().toLocaleString();
+  
+  //   const capturedDetails = `
+  //   Captured on ${now} | Avg Frequency: ${this.getAverageValue('frequency')} Hz, Avg PF: ${this.getAverageValue('PF')}, Avg Price: ${this.getAverageValue('electricPrice')} $
+  // `.trim();
+  
+  //   console.log('Captured Details:', capturedDetails);
+  
+  //   // Post data payload
+  //   const postData = {
+  //     post: {
+  //       content: capturedDetails,
+  //       image: null // Add an image if necessary
+  //     }
+  //   };
+  
+  //   // Send the post request
+  //   this.postService.createPost(postData).subscribe({
+  //     next: () => {
+  //       console.log('Device details shared successfully!');
+  //       alert('Device details have been shared successfully.');
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to share device details:', err);
+  //       if (err.error && err.error.content) {
+  //         console.error('Content validation errors:', err.error.content);
+  //       }
+  //       alert('An error occurred while sharing device details. Please check your data and try again.');
+  //     },
+  //   });
+  // }
+  
+  
+  
+  isExpanded = false; // Tracks whether the post creation modal is open
+  newPostContent = ''; // Content of the new post
+  newPostImage: string | null = null; // Image for the new post
+  userProfileImage: string = '/assets/images/default-profile.png'; // Default profile image
+  userName: string = 'User'; // Default user name
+  
+  capturedDetails: string = ''; 
+  
+  captureAndPostDeviceDetails(): void {
+    if (!this.deviceData || this.deviceData.length === 0) {
+      console.error('No device data to capture.');
+      Swal.fire({
+        icon: 'error',
+        title: 'No Data',
+        text: 'No device data available to share.',
+      });
+      return;
+    }
+  
+    const now = new Date().toLocaleString();
+  
+    // Generate captured details
+    this.capturedDetails = `
+      Captured on ${now} | Avg Frequency: ${this.getAverageValue('frequency')} Hz, Avg PF: ${this.getAverageValue('PF')}, Avg Price: ${this.getAverageValue('electricPrice')} $
+    `.trim();
+  
+    this.newPostContent = this.capturedDetails; // Pre-fill the content
+    this.isExpanded = true; // Show the modal
+  }
+  
+  onImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.newPostImage = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  
+  createPost(): void {
+    if (!this.newPostContent.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Empty Content',
+        text: 'Post content cannot be empty.',
+      });
+      return;
+    }
+  
+    // Ensure capturedDetails is not duplicated
+    const finalContent = this.newPostContent.includes(this.capturedDetails)
+      ? this.newPostContent.trim() // Use as-is if already appended
+      : `${this.newPostContent.trim()} ${this.capturedDetails.trim()}`; // Append if missing
+  
+    const postData = {
+      post: {
+        content: finalContent,
+        image: this.newPostImage || null, // Include the image if provided
+      },
+    };
+  
+    this.postService.createPost(postData).subscribe({
+      next: (response) => {
+        console.log('Post created successfully:', response);
+  
+        // Show success alert
+        Swal.fire({
+          icon: 'success',
+          title: 'Post Created',
+          text: 'Your post has been successfully created!',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+  
+        this.resetPostForm(); // Reset the form after posting
+      },
+      error: (err) => {
+        console.error('Error creating post:', err);
+  
+        // Show error alert
+        Swal.fire({
+          icon: 'error',
+          title: 'Post Failed',
+          text: 'Failed to create post. Please try again later.',
+        });
+  
+        if (err.error) {
+          console.error('Backend Error:', err.error); // Log backend error response
+        }
+      },
+    });
+  }
+  
+  resetPostForm(): void {
+    this.isExpanded = false;
+    this.newPostContent = '';
+    this.newPostImage = null;
+  }
+  
 
   initializeChart(): void {
     // Destroy existing charts if they exist

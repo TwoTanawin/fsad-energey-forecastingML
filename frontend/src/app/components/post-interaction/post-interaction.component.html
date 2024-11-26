@@ -115,15 +115,15 @@
       <input
         [(ngModel)]="newCommentText"
         type="text"
-        placeholder="Write a comment (max 100 characters)..."
-        maxlength="100"
+        placeholder="Write a comment (max 200 characters)..."
+        maxlength="200"
         class="w-full ml-2 p-2 border rounded-lg"
       />
       <button
         (click)="addComment()"
         class="ml-2 bg-blue-500 text-white py-1 px-4 rounded"
         [disabled]="
-          newCommentText.trim().length > 100 || !newCommentText.trim()
+          newCommentText.trim().length > 200 || !newCommentText.trim()
         "
       >
         Post
@@ -131,17 +131,17 @@
     </div>
     <p
       *ngIf="
-        newCommentText.trim().length > 50 && newCommentText.trim().length <= 100
+        newCommentText.trim().length > 50 && newCommentText.trim().length <= 200
       "
       class="text-yellow-500 text-sm mt-1"
     >
-      Comments cannot exceed 100 characters.
+      Comments cannot exceed 200 characters.
     </p>
     <p
-      *ngIf="newCommentText.trim().length > 100"
+      *ngIf="newCommentText.trim().length > 200"
       class="text-red-500 text-sm mt-1"
     >
-      Comment is too long! Please reduce the length to 100 characters or less.
+      Comment is too long! Please reduce the length to 200 characters or less.
     </p>
   </div>
 </div>

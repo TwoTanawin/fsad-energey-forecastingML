@@ -106,11 +106,11 @@ export class PostInteractionComponent implements OnInit {
       return;
     }
   
-    if (this.newCommentText.trim().length > 100) {
+    if (this.newCommentText.trim().length > 200) {
       Swal.fire({
         icon: 'error',
         title: 'Comment Too Long',
-        text: 'Comments cannot exceed 100 characters.',
+        text: 'Comments cannot exceed 200 characters.',
       });
       return;
     }

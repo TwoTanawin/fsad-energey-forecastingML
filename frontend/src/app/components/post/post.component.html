@@ -14,7 +14,7 @@
       <input
         type="text"
         placeholder="What's on your mind, {{ userName }}?"
-        class="w-full px-4 py-2 bg-gray-100 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="w-full px-4 py-2 bg-gray-200 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         (click)="isExpanded = true"
       />
     </div>
@@ -51,27 +51,27 @@
     </div>
 
     <!-- Post Content Input -->
-    <!-- <textarea [(ngModel)]="newPostContent" rows="3" placeholder="What's on your mind, {{userName}}?" class="w-full px-4 py-2 bg-gray-100 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea> -->
+    <!-- <textarea [(ngModel)]="newPostContent" rows="3" placeholder="What's on your mind, {{userName}}?" class="w-full px-4 py-2 bg-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea> -->
     <textarea
       [(ngModel)]="newPostContent"
       rows="3"
       placeholder="What's on your mind, {{ userName }}?"
-      maxlength="100"
-      class="w-full px-4 py-2 bg-gray-100 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      maxlength="200"
+      class="w-full px-4 py-2 bg-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
     ></textarea>
     <p
       *ngIf="
-        newPostContent.trim().length > 50 && newPostContent.trim().length <= 100
+        newPostContent.trim().length > 50 && newPostContent.trim().length <= 200
       "
       class="text-yellow-500 text-sm mt-1"
     >
-      Content cannot exceed 100 characters.
+      Content cannot exceed 200 characters.
     </p>
     <p
-      *ngIf="newPostContent.trim().length > 100"
+      *ngIf="newPostContent.trim().length > 200"
       class="text-red-500 text-sm mt-1"
     >
-      Post content is too long! Reduce it to 100 characters or less.
+      Post content is too long! Reduce it to 200 characters or less.
     </p>
 
     <!-- Image Upload Section -->
