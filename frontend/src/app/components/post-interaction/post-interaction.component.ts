@@ -97,29 +97,46 @@ export class PostInteractionComponent implements OnInit {
 
 
   addComment(): void {
-    if (this.newCommentText.trim()) {
-      const commentData = {
-        content: this.newCommentText,
-        post_id: this.postId, // Ensure post_id is passed correctly
-      };
-
-      this.postService.addCommentToPost(this.postId, commentData).subscribe({
-        next: (comment: any) => {
-          this.comments.push({
-            id: comment.id,
-            commenterName: this.userName,
-            commenterProfileImage: this.userProfileImage as string,
-            commentText: this.newCommentText,
-            userId: this.currentUserId,
-          });
-          this.newCommentText = ''; // Clear the input field
-        },
-        error: (error) => {
-          console.error('Failed to add comment:', error);
-        },
+    if (!this.newCommentText.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Empty Comment',
+        text: 'Comment cannot be empty.',
       });
+      return;
     }
+  
+    if (this.newCommentText.trim().length > 100) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Comment Too Long',
+        text: 'Comments cannot exceed 100 characters.',
+      });
+      return;
+    }
+  
+    const commentData = {
+      content: this.newCommentText,
+      post_id: this.postId, // Ensure post_id is passed correctly
+    };
+  
+    this.postService.addCommentToPost(this.postId, commentData).subscribe({
+      next: (comment: any) => {
+        this.comments.push({
+          id: comment.id,
+          commenterName: this.userName,
+          commenterProfileImage: this.userProfileImage as string,
+          commentText: this.newCommentText,
+          userId: this.currentUserId,
+        });
+        this.newCommentText = ''; // Clear the input field
+      },
+      error: (error) => {
+        console.error('Failed to add comment:', error);
+      },
+    });
   }
+  
 
   deleteComment(commentId: number, commentUserId: number): void {
     if (this.currentUserId === commentUserId) {

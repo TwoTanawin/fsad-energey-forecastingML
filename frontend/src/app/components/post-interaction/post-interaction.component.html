@@ -1,48 +1,83 @@
 <div class="bg-white shadow-md rounded-lg max-w-lg mx-auto my-4 p-4">
   <!-- Post Header -->
   <div class="flex items-center">
-    <img class="h-10 w-10 rounded-full" [src]="profileImage" alt="Profile Picture" />
+    <img
+      class="h-10 w-10 rounded-full"
+      [src]="profileImage"
+      alt="Profile Picture"
+    />
     <div class="ml-4">
       <h3 class="font-bold">{{ postOwner }}</h3>
       <p class="text-sm text-gray-500">{{ timestamp }}</p>
     </div>
     <div class="ml-auto">
       <button (click)="pin()" class="text-gray-500 hover:text-blue-500">
-        {{ isPinned ? 'Unpin' : 'Pin' }}
-      </button>      
-      <button (click)="delete()" class="text-gray-500 hover:text-red-500">Delete</button>
+        {{ isPinned ? "Unpin" : "Pin" }}
+      </button>
+      <button (click)="delete()" class="text-gray-500 hover:text-red-500">
+        Delete
+      </button>
     </div>
   </div>
 
   <!-- Post Content -->
-  <div *ngIf="!isEditing" class="mt-4">
-    <p class="text-gray-700">{{ postContent }}</p>
-    <img *ngIf="postImage" class="mt-2 rounded-lg" [src]="postImage" alt="Post Image" />
+  <div *ngIf="!isEditing" class="mt-4 break-words">
+    <p class="text-gray-700 break-words overflow-hidden text-ellipsis max-w-full">{{ postContent }}</p>
+    <img
+      *ngIf="postImage"
+      class="mt-2 rounded-lg"
+      [src]="postImage"
+      alt="Post Image"
+    />
   </div>
 
-      <!-- Post Actions -->
-      <div class="flex justify-between mt-4 text-sm text-gray-500">
-        <div>
-          <button (click)="likePost()">{{ isLiked ? 'Unlike' : 'Like' }} ({{ likeCount }})</button>
-          <button (click)="toggleEdit()">Edit</button>
-          <button (click)="sharePost()">Share</button>
-        </div>
-      </div>
-      
+  <!-- Post Actions -->
+  <div class="flex justify-between mt-4 text-sm text-gray-500">
+    <div>
+      <button (click)="likePost()">
+        {{ isLiked ? "Unlike" : "Like" }} ({{ likeCount }})
+      </button>
+      <button (click)="toggleEdit()">Edit</button>
+      <button (click)="sharePost()">Share</button>
+    </div>
+  </div>
 
   <!-- Post Edit Mode -->
   <div *ngIf="isEditing" class="mt-4">
-    <textarea [(ngModel)]="postContent" rows="3" class="w-full p-2 border rounded-lg"></textarea>
-    <button (click)="saveEdit(postContent)" class="mt-2 bg-blue-500 text-white py-1 px-4 rounded">Save</button>
+    <textarea
+      [(ngModel)]="postContent"
+      rows="3"
+      class="w-full p-2 border rounded-lg"
+    ></textarea>
+    <button
+      (click)="saveEdit(postContent)"
+      class="mt-2 bg-blue-500 text-white py-1 px-4 rounded"
+    >
+      Save
+    </button>
   </div>
 
   <!-- Comment Section -->
   <div class="mt-4">
-    <div *ngFor="let comment of comments" class="mb-2 flex items-start">
-      <img [src]="comment.commenterProfileImage" class="h-8 w-8 rounded-full" alt="Commenter Profile Picture" />
-      <div class="ml-2">
-        <p class="font-bold text-sm">{{ comment.commenterName }}</p>
-        <p class="text-gray-700">{{ comment.commentText }}</p>
+    <div
+      *ngFor="let comment of comments"
+      class="mb-2 flex items-start"
+    >
+      <img
+        [src]="comment.commenterProfileImage"
+        class="h-8 w-8 rounded-full"
+        alt="Commenter Profile Picture"
+      />
+      <div class="ml-2 max-w-full">
+        <p class="font-bold text-sm break-words max-w-full truncate">
+          {{ comment.commenterName }}
+        </p>
+        <p
+          class="text-gray-700 break-words overflow-hidden max-w-full"
+          style="word-break: break-word;"
+        >
+          {{ comment.commentText }}
+        </p>
       </div>
       <button
         *ngIf="currentUserId === comment.userId"
@@ -52,17 +87,46 @@
         Delete
       </button>
     </div>
+  <!-- </div> -->
+  
 
     <!-- Comment Input -->
     <div class="flex items-center mt-2">
-      <img [src]="userProfileImage" class="h-8 w-8 rounded-full" alt="Your Profile Picture" />
+      <img
+        [src]="userProfileImage"
+        class="h-8 w-8 rounded-full"
+        alt="Your Profile Picture"
+      />
       <input
         [(ngModel)]="newCommentText"
         type="text"
-        placeholder="Write a comment..."
+        placeholder="Write a comment (max 100 characters)..."
+        maxlength="100"
         class="w-full ml-2 p-2 border rounded-lg"
       />
-      <button (click)="addComment()" class="ml-2 bg-blue-500 text-white py-1 px-4 rounded">Post</button>
+      <button
+        (click)="addComment()"
+        class="ml-2 bg-blue-500 text-white py-1 px-4 rounded"
+        [disabled]="
+          newCommentText.trim().length > 100 || !newCommentText.trim()
+        "
+      >
+        Post
+      </button>
     </div>
+    <p
+      *ngIf="
+        newCommentText.trim().length > 50 && newCommentText.trim().length <= 100
+      "
+      class="text-yellow-500 text-sm mt-1"
+    >
+      Comments cannot exceed 100 characters.
+    </p>
+    <p
+      *ngIf="newCommentText.trim().length > 100"
+      class="text-red-500 text-sm mt-1"
+    >
+      Comment is too long! Please reduce the length to 100 characters or less.
+    </p>
   </div>
 </div>

@@ -71,8 +71,21 @@ export class PostComponent implements OnInit {
   }  
 
   createPost() {
-    if (!this.newPostContent && !this.newPostImage) {
-      console.error('Cannot create post without content or image.');
+    if (this.newPostContent.trim().length > 100) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Content Too Long',
+        text: 'Post content cannot exceed 100 characters.',
+      });
+      return;
+    }
+  
+    if (!this.newPostContent.trim() && !this.newPostImage) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Empty Post',
+        text: 'You cannot create an empty post.',
+      });
       return;
     }
   
