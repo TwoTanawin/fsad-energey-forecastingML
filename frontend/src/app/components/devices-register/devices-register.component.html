@@ -9,24 +9,114 @@
     <h2 class="mt-8 text-center text-2xl font-bold leading-9 text-gray-900">
       Register Your Device
     </h2>
-
+    
     <!-- Form -->
     <form (ngSubmit)="registerDevice()">
-      <!-- Address -->
+      <!-- Required Fields -->
       <div>
-        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-        <textarea
-          id="address"
-          [(ngModel)]="deviceAddress"
-          name="address"
-          rows="3"
+        <label for="province" class="block text-sm font-medium text-gray-700">Province</label>
+        <input
+          id="province"
+          [(ngModel)]="province"
+          name="province"
+          type="text"
           class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Device MAC or unique ID"
-          required></textarea>
+          placeholder="Enter province"
+          required
+        />
       </div>
-
-      <!-- Register Button -->
+    
       <div>
+        <label for="district" class="block text-sm font-medium text-gray-700">District</label>
+        <input
+          id="district"
+          [(ngModel)]="district"
+          name="district"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter district"
+          required
+        />
+      </div>
+    
+      <div>
+        <label for="subDistrict" class="block text-sm font-medium text-gray-700">Sub-district</label>
+        <input
+          id="subDistrict"
+          [(ngModel)]="subDistrict"
+          name="subDistrict"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter sub-district"
+          required
+        />
+      </div>
+    
+      <div>
+        <label for="postcode" class="block text-sm font-medium text-gray-700">Postcode</label>
+        <input
+          id="postcode"
+          [(ngModel)]="postcode"
+          name="postcode"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter postcode"
+          required
+        />
+      </div>
+    
+      <div>
+        <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+        <input
+          id="country"
+          [(ngModel)]="country"
+          name="country"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter country"
+          required
+        />
+      </div>
+    
+      <!-- Optional Fields -->
+      <div>
+        <label for="streetName" class="block text-sm font-medium text-gray-700">Street Name</label>
+        <input
+          id="streetName"
+          [(ngModel)]="streetName"
+          name="streetName"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter street name"
+        />
+      </div>
+    
+      <div>
+        <label for="building" class="block text-sm font-medium text-gray-700">Building</label>
+        <input
+          id="building"
+          [(ngModel)]="building"
+          name="building"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter building name"
+        />
+      </div>
+    
+      <div>
+        <label for="houseNumber" class="block text-sm font-medium text-gray-700">House Number</label>
+        <input
+          id="houseNumber"
+          [(ngModel)]="houseNumber"
+          name="houseNumber"
+          type="text"
+          class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter house number"
+        />
+      </div>
+    
+      <!-- Register Button -->
+      <div class="mt-4">
         <button
           type="submit"
           class="w-full bg-indigo-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -34,6 +124,7 @@
         </button>
       </div>
     </form>
+    
 
     <!-- Display Token -->
     <div *ngIf="token" class="mt-6 p-4 bg-green-100 rounded-md text-green-800">
