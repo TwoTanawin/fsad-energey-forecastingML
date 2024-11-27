@@ -69,6 +69,16 @@ class RegisterDevicesController < ApplicationController
     end
   end
 
+  def destroy
+    device = RegisterDevice.find_by(id: params[:id])
+
+    if device && device.user == @current_user
+      device.destroy
+      render json: { message: "Device deleted successfully" }, status: :ok
+    else
+      render json: { error: "Device not found or unauthorized" }, status: :not_found
+    end
+  end
 
 
   def device_info

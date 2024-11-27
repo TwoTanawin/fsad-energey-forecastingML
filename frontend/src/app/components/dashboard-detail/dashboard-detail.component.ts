@@ -273,11 +273,6 @@ export class DashboardDetailComponent implements OnInit {
     });
   }
   
-  
-  
-  
-  
-  
 
   initializeChart(): void {
     // Destroy existing charts if they exist

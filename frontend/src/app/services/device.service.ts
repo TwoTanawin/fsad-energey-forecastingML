@@ -74,5 +74,10 @@ export class DeviceService {
     const payload = { register_device: { address: newAddress } }; // Use this format for nested params
     return this.http.patch(`${this.BASE_URL}/register_devices/${deviceId}/update_address`, payload, { headers });
   }
+
+  deleteDevice(deviceId: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.BASE_URL}/register_devices/${deviceId}`, { headers });
+  }
   
 }
