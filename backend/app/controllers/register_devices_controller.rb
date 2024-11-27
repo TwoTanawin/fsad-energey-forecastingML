@@ -1,3 +1,4 @@
+require "httparty"
 class RegisterDevicesController < ApplicationController
   # Skip authorization only for non-authenticated actions
   skip_before_action :authorize_request, only: [ :hello_world, :device_info, :update ]
@@ -5,16 +6,24 @@ class RegisterDevicesController < ApplicationController
 
   def create
     if @current_user
-      # Create the device with a generated token
-      device = @current_user.register_devices.create(
-        address: params[:address],
-        token: SecureRandom.hex(16) # Generates a custom token
-      )
+      address = params[:address]
 
-      if device.save
-        render json: { token: device.token, message: "Device registered successfully" }, status: :created
+      # Validate the address using Google Maps API
+      validation_response = validate_address_with_google(address)
+      if validation_response[:valid]
+        # Create the device with a validated address and generated token
+        device = @current_user.register_devices.create(
+          address: validation_response[:formatted_address],
+          token: SecureRandom.hex(16) # Generates a custom token
+        )
+
+        if device.save
+          render json: { token: device.token, message: "Device registered successfully" }, status: :created
+        else
+          render json: { error: "Device registration failed" }, status: :unprocessable_entity
+        end
       else
-        render json: { error: "Device registration failed" }, status: :unprocessable_entity
+        render json: { error: "Invalid address", details: validation_response[:error] }, status: :unprocessable_entity
       end
     else
       render json: { error: "Invalid user credentials" }, status: :unauthorized
@@ -28,14 +37,14 @@ class RegisterDevicesController < ApplicationController
       render json: { error: "Unauthorized or invalid device" }, status: :unauthorized
       return
     end
-  
+
     # Check that the ID in the route matches the authenticated device
     if @device.id != params[:id].to_i
       Rails.logger.error("Device ID mismatch: Route ID #{params[:id]}, Device ID #{@device.id}")
       render json: { error: "Device ID mismatch" }, status: :unauthorized
       return
     end
-  
+
     # Extract the address parameter from the nested hash
     address = params.dig(:register_device, :address)
     if address.blank?
@@ -43,16 +52,22 @@ class RegisterDevicesController < ApplicationController
       render json: { error: "Address parameter is missing or empty" }, status: :unprocessable_entity
       return
     end
-  
-    # Update the device address
-    Rails.logger.info("Updating address for Device ID: #{@device.id}, New Address: #{address}")
-    if @device.update(address: address)
-      render json: { message: "Device address updated successfully", device: @device }, status: :ok
+
+    # Validate the address using Google Maps API
+    validation_response = validate_address_with_google(address)
+    if validation_response[:valid]
+      # Update the device address with the validated address
+      Rails.logger.info("Updating address for Device ID: #{@device.id}, New Address: #{validation_response[:formatted_address]}")
+      if @device.update(address: validation_response[:formatted_address])
+        render json: { message: "Device address updated successfully", device: @device }, status: :ok
+      else
+        Rails.logger.error("Failed to update address for Device ID: #{@device.id}, Errors: #{@device.errors.full_messages}")
+        render json: { error: "Failed to update device address", details: @device.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      Rails.logger.error("Failed to update address for Device ID: #{@device.id}, Errors: #{@device.errors.full_messages}")
-      render json: { error: "Failed to update device address", details: @device.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: "Invalid address", details: validation_response[:error] }, status: :unprocessable_entity
     end
-  end  
+  end
 
 
 
@@ -125,6 +140,37 @@ class RegisterDevicesController < ApplicationController
 
     unless @device
       render json: { error: "Unauthorized device" }, status: :unauthorized
+    end
+  end
+
+  def validate_address_with_google(address)
+    api_key = ENV["GOOGLE_MAPS_API_KEY"]
+    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+
+    # Log the address being validated
+    Rails.logger.info("Validating address: #{address}")
+
+    # Make the API call
+    response = HTTParty.get(base_url, query: { address: address, key: api_key })
+
+    # Log the response for debugging
+    Rails.logger.info("Google Maps API response: #{response.body}")
+
+    if response.code == 200 && response.parsed_response["status"] == "OK"
+      result = response.parsed_response["results"].first
+      {
+        valid: true,
+        formatted_address: result["formatted_address"],
+        components: result["address_components"],
+        geometry: result["geometry"]
+      }
+    else
+      # Handle invalid addresses or API errors
+      Rails.logger.error("Address validation failed: #{response.parsed_response['error_message'] || 'Invalid address'}")
+      {
+        valid: false,
+        error: response.parsed_response["error_message"] || "Invalid address"
+      }
     end
   end
 end
