@@ -1,33 +1,96 @@
-<div class="flex justify-center items-center">
-  <h2 class="text-center text-2xl">Real-Time Energy Consumption in Bangkok</h2>
-</div>
-<google-map [center]="center" [zoom]="zoom" height="500px" width="100%">
-  <!-- Render markers for all devices -->
-  <map-marker
-    *ngFor="let device of devices"
-    [position]="device.position"
-    [label]="device.label"
-    [icon]="device.icon"
-    [title]="device.title"
-    (mapClick)="onMarkerClick(device)"
-  >
-  </map-marker>
-</google-map>
+<div class="bg-white min-h-screen p-4 md:p-6">
+  <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Map Section -->
+    <div class="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col relative">
+      <!-- Map -->
+      <google-map
+        [center]="center"
+        [zoom]="zoom"
+        class="h-[400px] w-full"
+      >
+        <map-marker
+          *ngFor="let device of devices"
+          [position]="device.position"
+          [label]="device.label"
+          [icon]="device.icon"
+          [title]="device.title"
+          (mapClick)="onMarkerClick(device)"
+        >
+        </map-marker>
+      </google-map>
 
-<!-- Popup card -->
-<div
-  *ngIf="showInfoWindow"
-  class="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-4 w-80 z-50 text-center"
->
-  <h3 class="text-lg font-semibold mb-2">Device Data</h3>
-  <p><strong>Address:</strong> {{ infoWindowData?.address }}</p>
-  <p><strong>Average Voltage:</strong> {{ infoWindowData?.avg_voltage }}</p>
-  <p><strong>Average Power:</strong> {{ infoWindowData?.avg_power }}</p>
-  <p><strong>Average Current:</strong> {{ infoWindowData?.avg_current }}</p>
-  <button
-    (click)="closeInfoWindow()"
-    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-  >
-    Close
-  </button>
+      <!-- Powered by Google Watermark -->
+      <div
+        class="absolute bottom-2 right-2 text-xs text-gray-500 opacity-70 pointer-events-none"
+      >
+        Powered by Google
+      </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col relative">
+      <h3 class="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2">
+        Energy Consumption Summary
+      </h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Total Power Consumption -->
+        <div class="flex flex-col items-center bg-blue-100 p-4 rounded-lg">
+          <div class="text-base font-medium text-blue-800">
+            Total Power Consumption
+          </div>
+          <div class="text-2xl font-bold text-blue-900">
+            {{ summarizedData.totalPower || "N/A" }}
+            <span class="text-sm">W</span>
+          </div>
+        </div>
+
+        <!-- Average Voltage -->
+        <div class="flex flex-col items-center bg-green-100 p-4 rounded-lg">
+          <div class="text-base font-medium text-green-800">
+            Average Voltage
+          </div>
+          <div class="text-2xl font-bold text-green-900">
+            {{ summarizedData.avgVoltage || "N/A" }}
+            <span class="text-sm">V</span>
+          </div>
+        </div>
+
+        <!-- Average Current -->
+        <div class="flex flex-col items-center bg-purple-100 p-4 rounded-lg">
+          <div class="text-base font-medium text-purple-800">
+            Average Current
+          </div>
+          <div class="text-2xl font-bold text-purple-900">
+            {{ summarizedData.avgCurrent || "N/A" }}
+            <span class="text-sm">A</span>
+          </div>
+        </div>
+
+        <!-- Total Readings -->
+        <div class="flex flex-col items-center bg-yellow-100 p-4 rounded-lg">
+          <div class="text-base font-medium text-yellow-800">
+            Total Readings
+          </div>
+          <div class="text-2xl font-bold text-yellow-900">
+            {{ summarizedData.totalReadings || "N/A" }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Textual Summary from Groq -->
+      <div *ngIf="summarizedData.text" class="bg-gray-50 p-4 rounded-lg mt-4">
+        <p class="text-sm text-gray-700 whitespace-pre-line">
+          {{ summarizedData.text }}
+        </p>
+      </div>
+
+      <!-- Powered by GroqCloud Watermark -->
+      <div
+        class="absolute bottom-2 right-2 text-xs text-gray-500 opacity-70 pointer-events-none"
+      >
+        Powered by GroqCloud
+      </div>
+    </div>
+  </div>
 </div>

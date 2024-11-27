@@ -1,34 +1,35 @@
-<!-- Conditionally display navbar and sidebar -->
-<div *ngIf="!isSignInPage()">
-  <!-- Navigation Bar -->
-  <app-navbar></app-navbar>
-
-  <div class="flex flex-col min-h-screen">
-    <!-- Main content and sidebar -->
-    <div class="flex flex-grow">
+<!-- Main Layout Container -->
+<div class="flex flex-col min-h-screen">
+  <!-- Conditional Rendering Based on Page Type -->
+  <ng-container *ngIf="!isSignInPage(); else signInLayout">
+    <!-- Navigation Bar -->
+    <app-navbar class="fixed top-0 left-0 w-full z-50 bg-white shadow-md"></app-navbar>
+    
+    <!-- Main Content Wrapper (Adjusted for Fixed Navbar) -->
+    <div class="flex flex-grow pt-16">
       <!-- Sidebar -->
-      <app-sidebar></app-sidebar>
-
+      <app-sidebar class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] bg-gray-100 shadow-md"></app-sidebar>
+      
       <!-- Main Content Area -->
-      <div class="flex-grow p-6">
+      <main class="flex-grow ml-64 p-6">
         <router-outlet></router-outlet>
-      </div>
+      </main>
     </div>
-
+    
     <!-- Footer -->
-    <app-footer></app-footer>
-  </div>
-</div>
-
-<!-- <router-outlet /> -->
-
-<div *ngIf="isSignInPage()">
-  <div class="min-h-screen flex flex-col">
-    <div class="flex-grow flex items-center justify-center bg-gray-100">
-      <router-outlet></router-outlet>
+    <!-- <app-footer class="w-full bg-gray-200 text-center py-4 shadow-inner fixed bottom-0"></app-footer> -->
+  </ng-container>
+  
+  <!-- Sign-In/Register Page Layout Template -->
+  <ng-template #signInLayout>
+    <div class="flex flex-col min-h-screen">
+      <!-- Centered Content Area -->
+      <main class="flex-grow flex items-center justify-center bg-gray-100">
+        <router-outlet></router-outlet>
+      </main>
+      
+      <!-- Footer -->
+      <app-footer class="w-full bg-gray-200 text-center py-4 shadow-inner"></app-footer>
     </div>
-
-    <!-- Footer for the sign-in/register page -->
-    <app-footer></app-footer>
-  </div>
+  </ng-template>
 </div>
