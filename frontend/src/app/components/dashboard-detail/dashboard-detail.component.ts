@@ -15,6 +15,15 @@ export class DashboardDetailComponent implements OnInit {
   deviceData: any[] = []; // Metrics from the device
   chart: any; // Reference to the Chart.js instance
   forecastedValue: number = 0; // Dummy forecasted value with noise
+  newAddress: string = ''; // New address for update
+  deviceId: string | null = null; // Device ID from route
+  isUpdateAddressVisible: boolean = false;
+
+  province: string = '';
+  district: string = '';
+  subDistrict: string = '';
+  postcode: string = '';
+  country: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -25,7 +34,9 @@ export class DashboardDetailComponent implements OnInit {
   ngOnInit(): void {
     Chart.register(...registerables); // Register all required Chart.js components
     const deviceId = this.route.snapshot.paramMap.get('device_id');
+    console.log('Device ID:', deviceId);
     if (deviceId) {
+      this.deviceId = deviceId;
       this.logDeviceTokenAndFetchDetails(deviceId);
     } else {
       console.error('Device ID is missing in the route.');
@@ -76,45 +87,6 @@ export class DashboardDetailComponent implements OnInit {
     const noise = (Math.random() - 0.5) * 0.2 * basePrediction; // Add random noise
     this.forecastedValue = parseFloat((basePrediction + noise).toFixed(2));
   }
-
-  // captureAndPostDeviceDetails(): void {
-  //   if (!this.deviceData || this.deviceData.length === 0) {
-  //     console.error('No device data to capture.');
-  //     alert('No device data available to share.');
-  //     return;
-  //   }
-
-  //   const now = new Date().toLocaleString();
-  
-  //   const capturedDetails = `
-  //   Captured on ${now} | Avg Frequency: ${this.getAverageValue('frequency')} Hz, Avg PF: ${this.getAverageValue('PF')}, Avg Price: ${this.getAverageValue('electricPrice')} $
-  // `.trim();
-  
-  //   console.log('Captured Details:', capturedDetails);
-  
-  //   // Post data payload
-  //   const postData = {
-  //     post: {
-  //       content: capturedDetails,
-  //       image: null // Add an image if necessary
-  //     }
-  //   };
-  
-  //   // Send the post request
-  //   this.postService.createPost(postData).subscribe({
-  //     next: () => {
-  //       console.log('Device details shared successfully!');
-  //       alert('Device details have been shared successfully.');
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to share device details:', err);
-  //       if (err.error && err.error.content) {
-  //         console.error('Content validation errors:', err.error.content);
-  //       }
-  //       alert('An error occurred while sharing device details. Please check your data and try again.');
-  //     },
-  //   });
-  // }
   
   
   
@@ -218,6 +190,93 @@ export class DashboardDetailComponent implements OnInit {
     this.newPostContent = '';
     this.newPostImage = null;
   }
+
+  showUpdateAddressModal(): void {
+    this.isUpdateAddressVisible = true;
+  }
+
+  hideUpdateAddressModal(): void {
+    this.isUpdateAddressVisible = false;
+  }
+
+  
+
+  updateDeviceAddress(): void {
+    if (!this.deviceId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Device ID is missing. Please try again.',
+      });
+      return;
+    }
+  
+    // Combine all fields into a single string for the address
+    const address = [
+      this.province,
+      this.district,
+      this.subDistrict,
+      this.postcode,
+      this.country,
+    ]
+      .filter(Boolean) // Remove empty fields
+      .join(', '); // Combine with commas
+  
+    console.log('Device ID:', this.deviceId);
+    console.log('Address Payload:', address);
+  
+    // Fetch the token from the backend
+    this.deviceService.getTokenByDeviceId(this.deviceId).subscribe({
+      next: (response) => {
+        console.log("Token Response:", response);
+        if (response && response.token) {
+          // Cast this.deviceId to string since it's already checked
+          this.submitUpdatedAddress(this.deviceId as string, address, response.token);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Token not received. Please try again later.',
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching token:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to fetch the device token. Try again.',
+        });
+      },
+    });
+  }
+  
+  submitUpdatedAddress(deviceId: string, address: string, token: string): void {
+    this.deviceService.updateDeviceAddress(deviceId, address, token).subscribe({
+      next: (response) => {
+        console.log('Update Response:', response); 
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Device address updated successfully!',
+        });
+        this.isUpdateAddressVisible = false; // Hide the form
+      },
+      error: (err) => {
+        console.error('Error updating address:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update device address. Try again.',
+        });
+      },
+    });
+  }
+  
+  
+  
+  
+  
   
 
   initializeChart(): void {

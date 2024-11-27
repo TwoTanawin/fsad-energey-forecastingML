@@ -68,4 +68,11 @@ export class DeviceService {
   getAllDevicesData(): Observable<any> {
     return this.http.get(`${this.BASE_URL}/devices/all`, { headers: this.getAuthHeaders() });
   }
+
+  updateDeviceAddress(deviceId: string, newAddress: string, token: string): Observable<any> {
+    const headers = { Authorization: `Bearer ${token}` };
+    const payload = { register_device: { address: newAddress } }; // Use this format for nested params
+    return this.http.patch(`${this.BASE_URL}/register_devices/${deviceId}/update_address`, payload, { headers });
+  }
+  
 }

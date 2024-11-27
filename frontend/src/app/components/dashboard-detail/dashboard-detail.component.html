@@ -12,8 +12,137 @@
   >
     Share Device Details
   </button>
+  <!-- Button to Show Modal -->
+  <button
+    class="mt-6 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+    (click)="showUpdateAddressModal()"
+  >
+    Update Device Address
+  </button>
 
-  
+  <!-- Update Address Modal -->
+  <div
+    *ngIf="isUpdateAddressVisible"
+    class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex justify-center items-center"
+  >
+    <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-8">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-gray-900">Update Device Address</h2>
+        <button
+          (click)="hideUpdateAddressModal()"
+          class="text-gray-500 hover:text-gray-700"
+          aria-label="Close"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Update Address Form -->
+      <form (ngSubmit)="updateDeviceAddress()">
+        <!-- Required Fields -->
+        <div>
+          <label for="province" class="block text-sm font-medium text-gray-700"
+            >Province</label
+          >
+          <input
+            id="province"
+            [(ngModel)]="province"
+            name="province"
+            type="text"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter province"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="district" class="block text-sm font-medium text-gray-700"
+            >District</label
+          >
+          <input
+            id="district"
+            [(ngModel)]="district"
+            name="district"
+            type="text"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter district"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="subDistrict"
+            class="block text-sm font-medium text-gray-700"
+            >Sub-district</label
+          >
+          <input
+            id="subDistrict"
+            [(ngModel)]="subDistrict"
+            name="subDistrict"
+            type="text"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter sub-district"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="postcode" class="block text-sm font-medium text-gray-700"
+            >Postcode</label
+          >
+          <input
+            id="postcode"
+            [(ngModel)]="postcode"
+            name="postcode"
+            type="text"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter postcode"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="country" class="block text-sm font-medium text-gray-700"
+            >Country</label
+          >
+          <input
+            id="country"
+            [(ngModel)]="country"
+            name="country"
+            type="text"
+            class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter country"
+            required
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-4">
+          <button
+            type="submit"
+            class="w-full bg-indigo-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Update Address
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div *ngIf="deviceData.length > 0" class="bg-white shadow-md rounded-lg p-6">
     <h2 class="text-2xl font-bold mb-4">Device Metrics by ID</h2>
@@ -56,7 +185,6 @@
     <p>No device data available.</p>
   </div>
 </div>
-
 
 <!-- Expanded Post Creation Modal -->
 <div

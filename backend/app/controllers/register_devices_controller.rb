@@ -24,23 +24,36 @@ class RegisterDevicesController < ApplicationController
   def update
     # Ensure @device is authenticated by token
     if @device.nil?
+      Rails.logger.error("Unauthorized access: No device found for the token")
       render json: { error: "Unauthorized or invalid device" }, status: :unauthorized
       return
     end
-
+  
     # Check that the ID in the route matches the authenticated device
     if @device.id != params[:id].to_i
+      Rails.logger.error("Device ID mismatch: Route ID #{params[:id]}, Device ID #{@device.id}")
       render json: { error: "Device ID mismatch" }, status: :unauthorized
       return
     end
-
+  
+    # Extract the address parameter from the nested hash
+    address = params.dig(:register_device, :address)
+    if address.blank?
+      Rails.logger.error("Address parameter is missing or empty")
+      render json: { error: "Address parameter is missing or empty" }, status: :unprocessable_entity
+      return
+    end
+  
     # Update the device address
-    if @device.update(address: params[:address])
+    Rails.logger.info("Updating address for Device ID: #{@device.id}, New Address: #{address}")
+    if @device.update(address: address)
       render json: { message: "Device address updated successfully", device: @device }, status: :ok
     else
-      render json: { error: "Failed to update device address" }, status: :unprocessable_entity
+      Rails.logger.error("Failed to update address for Device ID: #{@device.id}, Errors: #{@device.errors.full_messages}")
+      render json: { error: "Failed to update device address", details: @device.errors.full_messages }, status: :unprocessable_entity
     end
-  end
+  end  
+
 
 
   def device_info
