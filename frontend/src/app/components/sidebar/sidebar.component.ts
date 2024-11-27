@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -6,6 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
+
+  constructor(private router: Router) {}
+
   navigation = [
     { name: 'Home', icon: 'home', href: '/map', current: true },
     { name: 'Dashboard', icon: 'dashboard', href: '/dashboard', current: false },
@@ -73,5 +77,9 @@ export class SidebarComponent {
   // Toggle options display for a specific topic
   toggleOptions(index: number) {
     this.showOptionsIndex = this.showOptionsIndex === index ? null : index;
+  }
+
+  isActive(route: string): boolean {
+    return this.router.url === route;
   }
 }
