@@ -4,9 +4,21 @@ class PostsController < ApplicationController
 
 # posts_controller.rb
 def index
-  posts = Post.includes(:user).order(created_at: :desc)
-  render json: posts.as_json(include: { user: { only: [ :firstName, :lastName, :userImg ] } })
+  thread = Thread.new do
+    Post.includes(:user).order(created_at: :desc)
+  end
+
+  posts = thread.value # Wait for the thread to finish and get the result
+
+  thread_serialize = Thread.new do
+    posts.as_json(include: { user: { only: [ :firstName, :lastName, :userImg ] } })
+  end
+
+  serialized_posts = thread_serialize.value # Wait for the serialization thread to finish
+
+  render json: serialized_posts
 end
+
 
 
 

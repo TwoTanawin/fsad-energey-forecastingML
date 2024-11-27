@@ -4,7 +4,11 @@ class DevicesController < ApplicationController
 
   # Retrieve all data for a specific device
   def get_device_data
-    device_data = Device.where(register_device_id: @register_device.id)
+    thread = Thread.new do
+      Device.where(register_device_id: @register_device.id)
+    end
+
+    device_data = thread.value # Wait for the thread to complete and get the result
 
     if device_data.any?
       render json: {
@@ -18,28 +22,38 @@ class DevicesController < ApplicationController
   end
 
   def get_all_devices_data
-    all_devices_data = Device.includes(:register_device).all
+    all_devices_thread = Thread.new do
+      Device.includes(:register_device).all
+    end
+
+    all_devices_data = all_devices_thread.value # Wait for the thread to complete and get the result
 
     if all_devices_data.any?
-      # Calculate averages for each device using Active Record
+      threads = []
+
       formatted_data = all_devices_data.map do |device|
-        {
-          id: device.id,
-          isActive: device.isActive,
-          avg_voltage: Device.where(id: device.id).average(:voltage)&.to_f&.round(3),
-          avg_power: Device.where(id: device.id).average(:power)&.to_f&.round(3),
-          avg_current: Device.where(id: device.id).average(:current)&.to_f&.round(3),
-          avg_energy: Device.where(id: device.id).average(:energy)&.to_f&.round(3),
-          avg_frequency: Device.where(id: device.id).average(:frequency)&.to_f&.round(3),
-          avg_power_factor: Device.where(id: device.id).average(:PF)&.to_f&.round(3), # Ensure PF is case-sensitive
-          avg_electric_price: Device.where(id: device.id).average(:electricPrice)&.to_f&.round(3),
-          register_device_details: {
-            id: device.register_device&.id,
-            address: device.register_device&.address,
-            created_at: device.register_device&.created_at
+        threads << Thread.new do
+          {
+            id: device.id,
+            isActive: device.isActive,
+            avg_voltage: Device.where(id: device.id).average(:voltage)&.to_f&.round(3),
+            avg_power: Device.where(id: device.id).average(:power)&.to_f&.round(3),
+            avg_current: Device.where(id: device.id).average(:current)&.to_f&.round(3),
+            avg_energy: Device.where(id: device.id).average(:energy)&.to_f&.round(3),
+            avg_frequency: Device.where(id: device.id).average(:frequency)&.to_f&.round(3),
+            avg_power_factor: Device.where(id: device.id).average(:PF)&.to_f&.round(3), # Ensure PF is case-sensitive
+            avg_electric_price: Device.where(id: device.id).average(:electricPrice)&.to_f&.round(3),
+            register_device_details: {
+              id: device.register_device&.id,
+              address: device.register_device&.address,
+              created_at: device.register_device&.created_at
+            }
           }
-        }
+        end
       end
+
+      # Wait for all threads to complete and collect their results
+      formatted_data = threads.map(&:value)
 
       render json: {
         message: "All devices average data retrieved successfully",
@@ -61,16 +75,37 @@ class DevicesController < ApplicationController
     end
   end
 
-  # Create new data for a device
-  def create_data
-    device = Device.new(device_params.merge(register_device_id: @register_device.id, user_id: @register_device.user_id))
+  # # Create new data for a device
+  # def create_data
+  #   device = Device.new(device_params.merge(register_device_id: @register_device.id, user_id: @register_device.user_id))
 
-    if device.save
+  #   if device.save
+  #     render json: { message: "Data created successfully", device: device }, status: :created
+  #   else
+  #     render json: { error: device.errors.full_messages }, status: :unprocessable_entity
+  #   end
+  # end
+
+  def create_data
+    thread = Thread.new do
+      begin
+        Device.create(device_params.merge(register_device_id: @register_device.id, user_id: @register_device.user_id))
+      rescue => e
+        Rails.logger.error("Error creating device data: #{e.message}")
+        nil
+      end
+    end
+
+    device = thread.value # Wait for the thread to finish and get the result
+
+    if device&.persisted?
       render json: { message: "Data created successfully", device: device }, status: :created
     else
-      render json: { error: device.errors.full_messages }, status: :unprocessable_entity
+      error_message = device&.errors&.full_messages || [ "Failed to create device data" ]
+      render json: { error: error_message }, status: :unprocessable_entity
     end
   end
+
 
   private
 

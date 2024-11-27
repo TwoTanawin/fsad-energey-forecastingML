@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { PostService } from '../../services/post.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ProfileService } from '../../shared/profile.service';
 
 @Component({
   selector: 'app-post',
@@ -26,7 +27,8 @@ export class PostComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private postService: PostService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private profileService: ProfileService 
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,10 @@ export class PostComponent implements OnInit {
     } else {
       console.error('User ID not found.');
     }
+
+    this.profileService.profileImage$.subscribe((newImage) => {
+      this.userProfileImage = newImage; // Update user profile image dynamically
+    });
   }
 
   fetchUserProfile(userId: number) {
