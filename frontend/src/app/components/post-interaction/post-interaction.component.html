@@ -46,11 +46,10 @@
   <!-- Post Actions -->
   <div class="flex justify-between mt-4 text-sm text-gray-500">
     <div>
-      <button (click)="likePost()">
+      <!-- <button (click)="likePost()">
         {{ isLiked ? "Unlike" : "Like" }} ({{ likeCount }})
-      </button>
+      </button> -->
 
-      <!-- Edit Button (Visible only to post owner) -->
       <button
         *ngIf="currentUserId === postOwnerId"
         (click)="toggleEdit()"
@@ -58,7 +57,7 @@
       >
         Edit
       </button>
-      <button (click)="sharePost()">Share</button>
+      <!-- <button (click)="sharePost()">Share</button> -->
     </div>
   </div>
 

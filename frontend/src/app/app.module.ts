@@ -26,6 +26,10 @@ import { PostComponent } from './components/post/post.component';
 import { PostInteractionComponent } from './components/post-interaction/post-interaction.component';
 import { SavedPostsComponent } from './components/saved-posts/saved-posts.component';
 import { DashboardDetailComponent } from './components/dashboard-detail/dashboard-detail.component';
+import { AboutUsComponent } from './components/about-us/about-us.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -44,6 +48,8 @@ import { DashboardDetailComponent } from './components/dashboard-detail/dashboar
     PostInteractionComponent,
     SavedPostsComponent,
     DashboardDetailComponent,
+    AboutUsComponent,
+    ContactComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,6 +58,8 @@ import { DashboardDetailComponent } from './components/dashboard-detail/dashboar
     RouterModule.forRoot([]),
     BrowserAnimationsModule,
     HttpClientModule,
+    MatIconModule,
+    MatCardModule,
     GoogleMapsModule  // Add GoogleMapsModule here
   ],
   providers: [],

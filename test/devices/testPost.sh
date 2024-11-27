@@ -15,7 +15,7 @@ curl -X POST http://localhost:3000/devices/data \
          }'
 
 curl -X POST http://localhost:3000/devices/data \
-     -H "Authorization: Bearer 426a55acdb5a16efea72ad1bdcbc37a3" \
+     -H "Authorization: Bearer 89a1fd4e09e2eea1842c50ff304c56fe" \
      -H "Content-Type: application/json" \
      -d '{
            "device": {
@@ -36,3 +36,7 @@ curl -X POST http://localhost:3000/devices/data \
 # 426a55acdb5a16efea72ad1bdcbc37a3
 
 # f7370e83b38d57855c16dec42fc06330
+
+a4428b2d81c4bd725c16cae148ba7d0a
+
+89a1fd4e09e2eea1842c50ff304c56fe

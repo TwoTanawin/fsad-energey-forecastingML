@@ -223,9 +223,9 @@ export class PostInteractionComponent implements OnInit {
   //   console.log('Post liked!');
   // }
 
-  sharePost() {
-    console.log('Post shared!');
-  }
+  // sharePost() {
+  //   console.log('Post shared!');
+  // }
 
   delete() {
     this.deletePost.emit();
@@ -291,32 +291,32 @@ export class PostInteractionComponent implements OnInit {
     }
   }
 
-  loadLikeStatus() {
-    this.postService.getLikeStatus(this.postId).subscribe({
-      next: (response) => {
-        this.isLiked = response.isLiked; // Boolean value representing if the user has liked this post
-        this.likeCount = response.likeCount; // Total like count for the post
-      },
-      error: (error) => console.error('Error loading like status:', error),
-    });
-  }
+  // loadLikeStatus() {
+  //   this.postService.getLikeStatus(this.postId).subscribe({
+  //     next: (response) => {
+  //       this.isLiked = response.isLiked; // Boolean value representing if the user has liked this post
+  //       this.likeCount = response.likeCount; // Total like count for the post
+  //     },
+  //     error: (error) => console.error('Error loading like status:', error),
+  //   });
+  // }
 
   // Method to toggle the like status
-  likePost() {
-    this.postService.toggleLike(this.postId).subscribe({
-      next: (response) => {
-        this.isLiked = response.isLiked; // `isLiked` is toggled by the backend
-        this.likeCount = response.likeCount; // Update the like count from the response
-      },
-      error: (error) => {
-        console.error('Error toggling like:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to toggle like.',
-        });
-      },
-    });
-  }
+  // likePost() {
+  //   this.postService.toggleLike(this.postId).subscribe({
+  //     next: (response) => {
+  //       this.isLiked = response.isLiked; // `isLiked` is toggled by the backend
+  //       this.likeCount = response.likeCount; // Update the like count from the response
+  //     },
+  //     error: (error) => {
+  //       console.error('Error toggling like:', error);
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'Failed to toggle like.',
+  //       });
+  //     },
+  //   });
+  // }
 
 }
