@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ProfileService } from '../../shared/profile.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +20,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
@@ -48,12 +51,28 @@ export class ProfileComponent implements OnInit {
       this.authService.updateUserProfile(this.id, userData).subscribe({
         next: () => {
           console.log('Profile updated successfully');
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your profile has been updated successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+          this.profileService.updateProfileImage(this.profilePicture as string);
           this.toggleEditMode(); // Exit edit mode after saving
         },
-        error: (err) => console.error('Error updating profile:', err)
+        error: (err) => {
+          console.error('Error updating profile:', err);
+          Swal.fire({
+            title: 'Error!',
+            text: 'There was an error updating your profile. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
       });
     }
   }
+  
 
   onImageSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -67,6 +86,7 @@ export class ProfileComponent implements OnInit {
         
         // Display image preview with the original result
         this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(result);
+        this.profileService.updateProfileImage(result);
       };
       
       reader.readAsDataURL(file); // Encode image to Base64
@@ -84,7 +104,9 @@ export class ProfileComponent implements OnInit {
         
         // Check if `userImg` exists and is Base64 encoded
         if (data.userImg && this.isBase64(data.userImg)) {
+          const decodedImage = `data:image/png;base64,${data.userImg}`;
           this.profilePicture = this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${data.userImg}`);
+          this.profileService.updateProfileImage(decodedImage);
         } else {
           this.profilePicture = '/assets/images/brocode.png'; // Default image if invalid or missing
         }

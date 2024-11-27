@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../shared/profile.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,10 +23,13 @@ export class NavbarComponent implements OnInit {
   profileMenuOpen = false;
   profileImage: string = 'https://flowbite.com/application-ui/demo/images/users/jese-leos-2x.png';  // Default image
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.fetchUserProfile();
+    this.profileService.profileImage$.subscribe((newImage) => {
+      this.profileImage = newImage;
+    });
   }
 
   // Fetch the user profile data and decode the profile image
