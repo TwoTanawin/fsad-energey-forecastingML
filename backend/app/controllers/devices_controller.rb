@@ -26,7 +26,7 @@ class DevicesController < ApplicationController
       Device.includes(:register_device).all
     end
 
-    all_devices_data = all_devices_thread.value # Wait for the thread to complete and get the result
+    all_devices_data = all_devices_thread.value
 
     if all_devices_data.any?
       threads = []
@@ -41,7 +41,7 @@ class DevicesController < ApplicationController
             avg_current: Device.where(id: device.id).average(:current)&.to_f&.round(3),
             avg_energy: Device.where(id: device.id).average(:energy)&.to_f&.round(3),
             avg_frequency: Device.where(id: device.id).average(:frequency)&.to_f&.round(3),
-            avg_power_factor: Device.where(id: device.id).average(:PF)&.to_f&.round(3), # Ensure PF is case-sensitive
+            avg_power_factor: Device.where(id: device.id).average(:PF)&.to_f&.round(3),
             avg_electric_price: Device.where(id: device.id).average(:electricPrice)&.to_f&.round(3),
             register_device_details: {
               id: device.register_device&.id,
@@ -52,7 +52,6 @@ class DevicesController < ApplicationController
         end
       end
 
-      # Wait for all threads to complete and collect their results
       formatted_data = threads.map(&:value)
 
       render json: {

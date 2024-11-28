@@ -6,8 +6,8 @@ BASE_URL = "http://localhost:3000"  # Replace with your actual base URL
 def main():
     # Login data
     login_data = {
-        "email": "gogo@Gogo.com",
-        "password": "securepassword"
+        "email": "bb8@bb8.com",
+        "password": "11111111"
     }
 
     # Perform login request

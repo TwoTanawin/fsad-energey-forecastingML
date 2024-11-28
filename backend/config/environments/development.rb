@@ -64,6 +64,11 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   config.action_view.annotate_rendered_view_with_filenames = true
 
+  config.hosts << "localhost"
+  config.hosts << "127.0.0.1"
+  config.hosts << "backend_web"  # For Docker container communication
+  config.hosts << /.*\.ap-southeast-1\.elb\.amazonaws\.com/
+
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
